@@ -1,0 +1,57 @@
+<?php
+/**
+ * Dashboard de l'application
+ * Page principale après connexion
+ */
+
+// Inclure le fichier de configuration
+require_once 'config/config.php';
+
+// Vérifier si l'utilisateur est connecté
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    // Rediriger vers la page de connexion si non connecté
+    redirect('index.php');
+}
+
+// Définir le titre de la page
+$page_title = "Tableau de bord";
+
+// Définir ROOT_PATH pour le header
+define('ROOT_PATH', dirname(__FILE__));
+
+// Inclure l'en-tête
+include_once 'includes/header.php';
+?>
+
+<!-- Contenu principal -->
+<div class="container mt-5">
+    <!-- Message de succès -->
+    <div class="alert alert-success" role="alert">
+        <h4 class="alert-heading"><i class="fas fa-check-circle me-2"></i>Connexion réussie !</h4>
+        <p>Bienvenue <strong><?php echo $_SESSION['user_prenom'] . ' ' . $_SESSION['user_nom']; ?></strong> dans le système de gestion de stock de la pharmacie.</p>
+        <hr>
+        <p class="mb-0">Vous êtes connecté en tant que <strong><?php echo $_SESSION['user_role']; ?></strong>.</p>
+    </div>
+    
+    <!-- Carte de présentation -->
+    <div class="card mt-4">
+        <div class="card-header bg-primary text-white">
+            <i class="fas fa-tachometer-alt me-2"></i>Tableau de bord
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">Système de gestion de stock de pharmacie</h5>
+            <p class="card-text">
+                Ce système vous permet de gérer efficacement le stock des fournitures de votre pharmacie.
+                Vous pouvez consulter, ajouter, modifier et supprimer des produits, ainsi que suivre tous les mouvements de stock.
+            </p>
+            <p>
+                Utilisez le menu pour naviguer entre les différentes fonctionnalités.
+            </p>
+        </div>
+    </div>
+</div>
+
+<?php
+// Inclure le pied de page
+include_once 'includes/footer.php';
+?>
