@@ -93,6 +93,21 @@ if (isset($_SESSION['error_message'])) {
             color: #6c757d;
         }
     </style>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#198754">
+    <!-- Icône pour l'écran d'accueil -->
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/img/logo.png">
+    <link rel="apple-touch-icon" href="assets/img/logo2.png">
+    <script>
+      // Enregistrement du service worker
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('service-worker.js');
+        });
+      }
+    </script>
 </head>
 <body>
     <!-- Loader -->

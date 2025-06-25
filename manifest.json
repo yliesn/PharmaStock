@@ -1,0 +1,21 @@
+{
+  "name": "Pharmacie Stock App",
+  "short_name": "Pharmacie",
+  "start_url": "/index.php",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#198754",
+  "description": "Gestion de stock pour pharmacie.",
+  "icons": [
+    {
+      "src": "/assets/img/logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/img/logo2.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
