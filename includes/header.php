@@ -163,7 +163,7 @@ $role = isset($_SESSION['user_role']) ? htmlspecialchars($_SESSION['user_role'])
     <link rel="manifest" href="<?php echo BASE_URL; ?>/manifest.json">
     <meta name="theme-color" content="#198754">
     <!-- Icône pour l'écran d'accueil -->
-    <link rel="icon" type="image/png" sizes="192x192" href="<?php echo BASE_URL; ?>/assets/img/logo.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="<?php echo BASE_URL; ?>/assets/img/logo2.png">
     <link rel="apple-touch-icon" href="<?php echo BASE_URL; ?>/assets/img/logo2.png">
     <script>
       // Enregistrement du service worker

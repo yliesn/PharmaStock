@@ -98,7 +98,7 @@ if (isset($_SESSION['error_message'])) {
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#198754">
     <!-- Icône pour l'écran d'accueil -->
-    <link rel="icon" type="image/png" sizes="192x192" href="assets/img/logo.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/img/logo2.png">
     <link rel="apple-touch-icon" href="assets/img/logo2.png">
     <script>
       // Enregistrement du service worker
@@ -124,7 +124,7 @@ if (isset($_SESSION['error_message'])) {
         <!-- Logo -->
         <div class="logo-container">
           <!--  <i class="fas fa-house-medical text-success " style="font-size: 5rem" ></i> -->
-             <img src="assets/img/logo.png" alt="Logo Pharmacie" class="logo">
+             <img src="assets/img/logo2.png" alt="Logo Pharmacie" class="logo">
         </div>
         
         <!-- Titre -->
