@@ -1,4 +1,3 @@
-
 # ✅ Checklist de test complète – PharmaStock
 
 Cette checklist permet de valider le bon fonctionnement du SaaS après migration et en production.
@@ -73,3 +72,15 @@ Cette checklist permet de valider le bon fonctionnement du SaaS après migration
 - [ ] Création produit → entrée → sortie → suppression
 - [ ] Utilisateur supprimé ou inactif = bloqué
 - [ ] Gestion d’un import CSV mal formé
+
+---
+
+## ✅ 8. Approbation des sorties de stock
+
+- [ ] Un visiteur peut demander une sortie de stock (modal, quantité, motif)
+- [ ] La demande apparaît côté utilisateur/administrateur dans la liste des approbations
+- [ ] Un utilisateur/administrateur peut approuver ou refuser la demande
+- [ ] Le mouvement de stock n'est créé qu'après approbation
+- [ ] Le visiteur reçoit une notification de succès ou d'échec
+- [ ] Le nombre de demandes en attente s'affiche sur le dashboard (USER/ADMIN)
+- [ ] L'accès à la page d'approbation est restreint aux bons rôles
