@@ -14,6 +14,16 @@ if (!defined('ROOT_PATH')) {
 $nom = isset($_SESSION['user_nom']) ? htmlspecialchars($_SESSION['user_nom']) : '';
 $prenom = isset($_SESSION['user_prenom']) ? htmlspecialchars($_SESSION['user_prenom']) : '';
 $role = isset($_SESSION['user_role']) ? htmlspecialchars($_SESSION['user_role']) : '';
+
+// Vérifier si l'utilisateur a les droits d'accès
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    $_SESSION['error_message'] = "Vous n'avez pas les droits nécessaires pour accéder à cette page.";
+    redirect('dashboard.php');
+}
+if ($_SESSION['user_role'] === 'VISITEUR') {
+    $_SESSION['error_message'] = "Espace réservé aux visiteurs.";
+    redirect('/views/visiteur/index.php');
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -193,6 +203,11 @@ $role = isset($_SESSION['user_role']) ? htmlspecialchars($_SESSION['user_role'])
                             <i class="fas fa-tachometer-alt me-1"></i> Tableau de bord
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?php echo BASE_URL; ?>/views/users/approbations.php">
+                            <i class="fas fa-clipboard-check me-1"></i> Approbations
+                        </a>
+                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="stockDropdown" role="button" data-bs-toggle="dropdown">
                             <i class="fas fa-boxes me-1"></i> Stock
@@ -238,6 +253,7 @@ $role = isset($_SESSION['user_role']) ? htmlspecialchars($_SESSION['user_role'])
                         </ul>
                     </li>
                     <?php endif; ?>
+
                 </ul>
                 
                 <!-- Menu utilisateur -->

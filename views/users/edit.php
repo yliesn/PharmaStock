@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors[] = "Les mots de passe ne correspondent pas.";
         }
         
-        if (empty($role) || !in_array($role, ['ADMIN', 'UTILISATEUR'])) {
+        if (empty($role) || !in_array($role, ['ADMIN', 'UTILISATEUR', 'VISITEUR'])) {
             $errors[] = "Le rôle sélectionné n'est pas valide.";
         }
         
@@ -231,6 +231,8 @@ include_once ROOT_PATH . '/includes/header.php';
                                 <option value="" disabled>Sélectionnez un rôle</option>
                                 <option value="ADMIN" <?php echo $user['role'] === 'ADMIN' ? 'selected' : ''; ?>>Administrateur</option>
                                 <option value="UTILISATEUR" <?php echo $user['role'] === 'UTILISATEUR' ? 'selected' : ''; ?>>Utilisateur</option>
+                                <option value="VISITEUR" <?php echo (isset($role) && $role === 'VISITEUR') ? 'selected' : ''; ?>>Visiteur</option>
+
                             </select>
                             <div class="form-text">Les administrateurs ont accès à toutes les fonctionnalités du système.</div>
                             <div class="invalid-feedback">Veuillez sélectionner un rôle.</div>

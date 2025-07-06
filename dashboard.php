@@ -90,8 +90,41 @@ include_once 'includes/header.php';
     </div> 
     <!-- Cartes de statistiques -->
     <div class="row mb-4">
-        <!-- Carte des fournitures totales -->
+        <!-- Carte Approbations -->
         <div class="col-xl-3 col-md-6 mb-4">
+            <a href="<?php echo BASE_URL; ?>/views/users/approbations.php" class="text-decoration-none position-relative">
+                <div class="card border-left-primary shadow h-100 py-2 hover-effect">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Approbations à traiter</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    <span id="approbations-count">...</span>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-clipboard-check fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('<?php echo BASE_URL; ?>/api/approbations_count.php')
+                .then(r => r.json())
+                .then(data => {
+                    document.getElementById('approbations-count').textContent = data.count;
+                })
+                .catch(() => {
+                    document.getElementById('approbations-count').textContent = '?';
+                });
+        });
+        </script>
+        <!-- Carte des fournitures totales -->
+        <!-- <div class="col-xl-3 col-md-6 mb-4">
             <a href="<?php echo BASE_URL; ?>/views/supplies/list.php" class="text-decoration-none">
                 <div class="card border-left-primary shadow h-100 py-2 hover-effect">
                     <div class="card-body">
@@ -108,7 +141,7 @@ include_once 'includes/header.php';
                     </div>
                 </div>
             </a>
-        </div>
+        </div> -->
 
         <!-- Carte des ruptures de stock -->
         <div class="col-xl-3 col-md-6 mb-4">
@@ -150,7 +183,7 @@ include_once 'includes/header.php';
             </a>
         </div>
 
-                <!-- Carte des commandes en cours -->
+        <!-- Carte des commandes en cours -->
         <div class="col-xl-3 col-md-6 mb-4">
             <a href="<?php echo BASE_URL; ?>/views/supplies/list.php?filter=ordered" class="text-decoration-none">
                 <div class="card border-left-success shadow h-100 py-2 hover-effect">
@@ -169,28 +202,7 @@ include_once 'includes/header.php';
                 </div>
             </a>
         </div>
-
-        <!-- Carte des mouvements du jour -->
-        <!-- <div class="col-xl-3 col-md-6 mb-4">
-                    <a href="<?php echo BASE_URL; ?>/views/stock/movements.php?start_date=<?php echo date('Y-m-d'); ?>&end_date=<?php echo date('Y-m-d'); ?>" class="text-decoration-none">
-                        <div class="card border-left-info shadow h-100 py-2 hover-effect">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                            Mouvements aujourd'hui</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo number_format($today_movements, 0, ',', ' '); ?></div>
-                                    </div>
-                                    <div class="col-auto">
-                                        <i class="fas fa-exchange-alt fa-2x text-gray-300"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                </div> -->
-    
+    </div>
     
     
     

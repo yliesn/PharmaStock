@@ -121,6 +121,8 @@ include_once ROOT_PATH . '/includes/header.php';
                                     <td>
                                         <?php if ($user['role'] === 'ADMIN'): ?>
                                             <span class="badge bg-danger">Administrateur</span>
+                                        <?php elseif ($user['role'] === 'VISITEUR'): ?>
+                                            <span class="badge bg-secondary">Visiteur</span>
                                         <?php else: ?>
                                             <span class="badge bg-info">Utilisateur</span>
                                         <?php endif; ?>
