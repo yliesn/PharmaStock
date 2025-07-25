@@ -70,7 +70,7 @@ try {
         'ID',
         'Référence',
         'Désignation',
-        'Description',
+        'Conditionnement',
         'Quantité en stock',
         'Seuil d\'alerte',
         'Statut'

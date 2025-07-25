@@ -166,9 +166,9 @@ include_once ROOT_PATH . '/includes/header.php';
                         
                         <!-- Description -->
                         <div class="mb-3">
-                            <label for="description" class="form-label">Description</label>
+                            <label for="description" class="form-label">Conditionnement</label>
                             <textarea class="form-control" id="description" name="description" rows="3"><?php echo htmlspecialchars($supply['description']); ?></textarea>
-                            <div class="form-text">Description détaillée de la fourniture (optionnel).</div>
+                            <div class="form-text">Conditionnement de la fourniture (optionnel).</div>
                         </div>
                         
                         <!-- Quantité en stock (affichage uniquement) et Seuil d'alerte -->

@@ -119,7 +119,7 @@ include_once ROOT_PATH . '/includes/header.php';
                         <div class="col-md-8"><?php echo htmlspecialchars($supply['designation']); ?></div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-md-4 fw-bold text-muted">Description:</div>
+                        <div class="col-md-4 fw-bold text-muted">Conditionnement:</div>
                         <div class="col-md-8">
                             <?php echo !empty($supply['description']) ? nl2br(htmlspecialchars($supply['description'])) : '<em class="text-muted">Non renseignée</em>'; ?>
                         </div>

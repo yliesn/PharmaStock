@@ -15,7 +15,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 try {
     $db = getDbConnection();
     $stmt = $db->query("
-        SELECT id, reference, designation, quantite_stock, seuil_alerte
+        SELECT id, reference, designation, description, quantite_stock, seuil_alerte
         FROM FOURNITURE
         WHERE seuil_alerte IS NOT NULL
         AND quantite_stock <= seuil_alerte
@@ -55,7 +55,7 @@ try {
 // Récupérer les fournitures en commande
 try {
     $stmt = $db->query("
-        SELECT id, reference, designation, quantite_stock, seuil_alerte, commande_en_cours
+        SELECT id, reference, designation, description, quantite_stock, seuil_alerte, commande_en_cours
         FROM FOURNITURE
         WHERE commande_en_cours = TRUE
         ORDER BY reference
@@ -91,7 +91,7 @@ include_once 'includes/header.php';
     <!-- Cartes de statistiques -->
     <div class="row mb-4">
         <!-- Carte Approbations -->
-        <div class="col-xl-3 col-md-6 mb-4">
+        <!-- <div class="col-xl-3 col-md-6 mb-4">
             <a href="<?php echo BASE_URL; ?>/views/users/approbations.php" class="text-decoration-none position-relative">
                 <div class="card border-left-primary shadow h-100 py-2 hover-effect">
                     <div class="card-body">
@@ -122,9 +122,9 @@ include_once 'includes/header.php';
                     document.getElementById('approbations-count').textContent = '?';
                 });
         });
-        </script>
+        </script> -->
         <!-- Carte des fournitures totales -->
-        <!-- <div class="col-xl-3 col-md-6 mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
             <a href="<?php echo BASE_URL; ?>/views/supplies/list.php" class="text-decoration-none">
                 <div class="card border-left-primary shadow h-100 py-2 hover-effect">
                     <div class="card-body">
@@ -141,7 +141,7 @@ include_once 'includes/header.php';
                     </div>
                 </div>
             </a>
-        </div> -->
+        </div>
 
         <!-- Carte des ruptures de stock -->
         <div class="col-xl-3 col-md-6 mb-4">
@@ -236,7 +236,11 @@ include_once 'includes/header.php';
                             <?php foreach ($low_stock_items as $item): ?>
                                 <tr>
                                     <td><?php echo htmlspecialchars($item['reference']); ?></td>
-                                    <td><strong><?php echo htmlspecialchars($item['designation']); ?></strong></td>
+                                    <td><strong><?php echo htmlspecialchars($item['designation']); ?></strong>
+                                        <?php if (!empty($item['description'])): ?>
+                                            <div class="small text-muted"><?php echo htmlspecialchars(mb_substr($item['description'], 0, 50)) . (mb_strlen($item['description']) > 50 ? '...' : ''); ?></div>
+                                        <?php endif; ?>
+                                    </td>
                                     <td class="text-center font-weight-bold <?php echo $item['quantite_stock'] == 0 ? 'text-danger' : 'text-warning'; ?>">
                                         <?php echo number_format($item['quantite_stock'], 0, ',', ' '); ?>
                                     </td>
@@ -323,7 +327,11 @@ include_once 'includes/header.php';
                             <?php foreach ($ordered_items as $item): ?>
                                 <tr>
                                     <td><?php echo htmlspecialchars($item['reference']); ?></td>
-                                    <td><strong><?php echo htmlspecialchars($item['designation']); ?></strong></td>
+                                    <td><strong><?php echo htmlspecialchars($item['designation']); ?></strong>
+                                        <?php if (!empty($item['description'])): ?>
+                                            <div class="small text-muted"><?php echo htmlspecialchars(mb_substr($item['description'], 0, 50)) . (mb_strlen($item['description']) > 50 ? '...' : ''); ?></div>
+                                        <?php endif; ?>
+                                    </td>
                                     <td class="text-center font-weight-bold <?php echo $item['quantite_stock'] == 0 ? 'text-danger' : ($item['quantite_stock'] <= $item['seuil_alerte'] ? 'text-warning' : ''); ?>">
                                         <?php echo number_format($item['quantite_stock'], 0, ',', ' '); ?>
                                     </td>
