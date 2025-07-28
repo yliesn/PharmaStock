@@ -40,7 +40,6 @@ public/uploads/
 wp-content/uploads/
 
 # Base de données
-*.sql
 *.sqlite
 *.db
 
