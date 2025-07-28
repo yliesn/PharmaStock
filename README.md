@@ -1,15 +1,39 @@
 # Pharmacie - Gestion de Stock
 
-Ce projet est une application web de gestion de stock pour une pharmacie. Elle permet de gérer les approvisionnements, les mouvements de stock, les utilisateurs, et d'autres fonctionnalités essentielles à la gestion quotidienne d'une pharmacie.
+Ce projet est une application web de gestion de stock initialement conçue pour une pharmacie. Elle permet de gérer les approvisionnements, les mouvements de stock, les utilisateurs, et d'autres fonctionnalités essentielles à la gestion quotidienne d'une pharmacie.
 
-## Fonctionnalités principales
+> **Note :** Bien que le projet soit orienté pharmacie, il est facilement adaptable à d'autres domaines nécessitant une gestion de stock (bureautique, fournitures, matériel, etc.) en modifiant quelques éléments du code et des vues. Mon besoin initial était la gestion de stock de pharmacie, mais la structure reste générique et flexible.
 
-- **Gestion des stocks** : Entrées, sorties, mouvements, exportation des mouvements.
-- **Gestion des approvisionnements** : Ajout, édition, import/export, visualisation des approvisionnements.
-- **Gestion des utilisateurs** : Ajout, édition, gestion des profils, approbations.
-- **Sauvegarde et restauration** : Sauvegardes automatiques de la base de données.
-- **Authentification** : Connexion, déconnexion, gestion des droits d'accès.
-- **Notifications** : Système de notifications pour les mouvements et approbations.
+## Fonctionnalités principales détaillées
+
+- **Gestion des stocks**
+  - Saisie des entrées et sorties de stock (ajout/retrait de quantités)
+  - Historique complet des mouvements (qui, quoi, quand, pourquoi)
+  - Exportation des mouvements de stock (CSV, Excel, etc.)
+  - Alertes sur les seuils bas de stock
+- **Gestion des approvisionnements**
+  - Ajout, édition et suppression de fournitures
+  - Import/export de la liste des fournitures
+  - Visualisation détaillée de chaque fourniture (stock, historique, alertes)
+  - Gestion des commandes en cours
+- **Gestion des utilisateurs**
+  - Création, modification et suppression de comptes utilisateurs
+  - Attribution de rôles (admin, gestionnaire, utilisateur simple, etc.)
+  - Gestion des droits d'accès selon le rôle
+  - Suivi des connexions et activité des utilisateurs
+- **Approbations et validation**
+  - Système de demandes d'approbation pour les sorties sensibles
+  - Validation ou refus par un utilisateur autorisé
+  - Historique des approbations et motifs
+- **Sauvegarde et restauration**
+  - Sauvegardes automatiques ou manuelles de la base de données
+  - Restauration rapide à partir d'une sauvegarde
+- **Authentification et sécurité**
+  - Connexion sécurisée par login/mot de passe (hashé)
+  - Déconnexion, gestion de session, protection contre les accès non autorisés
+- **Notifications**
+  - Notifications internes pour les mouvements, approbations, seuils critiques
+  - (Possibilité d'ajouter des notifications par email ou autres canaux)
 
 ## Structure du projet
 
@@ -45,12 +69,6 @@ Ce projet est une application web de gestion de stock pour une pharmacie. Elle p
    - Placer le dossier sur un serveur web compatible PHP (ex : Apache, Nginx).
    - Accéder à `index.php` via votre navigateur.
 
-## Bonnes pratiques de sécurité
-
-- **Ne jamais pousser** les fichiers `config.php` et `database.php` sur GitHub : ils sont exclus par le `.gitignore`.
-- Les fichiers modèles (`config.model.php`, `database.model.php`) peuvent être versionnés sans risque.
-- Les sauvegardes et fichiers de base de données ne sont pas suivis par Git.
-
 ## Dépendances
 
 - PHP >= 7.0
@@ -63,8 +81,4 @@ Les sauvegardes de la base de données sont stockées dans le dossier `backup/` 
 
 ## Auteurs
 
-- [Votre nom ou équipe]
-
-## Licence
-
-Ce projet est sous licence privée. Contactez l'auteur pour toute utilisation ou modification.
+- Nejara Ylies
