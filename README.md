@@ -25,31 +25,37 @@ Ce projet est une application web de gestion de stock pour une pharmacie. Elle p
 - `test/` : Scripts de test et de développement
 - `views/` : Vues PHP pour l'affichage (stock, approvisionnements, utilisateurs, visiteur)
 
-## Installation
+## Installation détaillée
 
 1. **Cloner le dépôt**
    ```bash
    git clone <url-du-repo>
    ```
-2. **Configurer la base de données**
-   - Importer le fichier `script.sql` ou une sauvegarde depuis le dossier `backup/` dans votre serveur MySQL.
-   - Modifier les accès à la base dans `config/database.php`.
-3. **Configurer l'environnement**
-   - Adapter les paramètres dans `config/config.php` selon vos besoins.
+2. **Préparer la configuration**
+   - Copier les fichiers modèles de configuration :
+     ```bash
+     cp config/config.model.php config/config.php
+     cp config/database.model.php config/database.php
+     ```
+   - Modifier `config/database.php` avec vos identifiants réels de base de données (hôte, nom, utilisateur, mot de passe).
+   - Adapter les paramètres dans `config/config.php` selon vos besoins (URL, options, etc).
+3. **Installer la base de données**
+   - Importer le fichier `script.sql` ou une sauvegarde depuis le dossier `backup/` dans votre serveur MySQL/MariaDB.
 4. **Lancer l'application**
    - Placer le dossier sur un serveur web compatible PHP (ex : Apache, Nginx).
    - Accéder à `index.php` via votre navigateur.
+
+## Bonnes pratiques de sécurité
+
+- **Ne jamais pousser** les fichiers `config.php` et `database.php` sur GitHub : ils sont exclus par le `.gitignore`.
+- Les fichiers modèles (`config.model.php`, `database.model.php`) peuvent être versionnés sans risque.
+- Les sauvegardes et fichiers de base de données ne sont pas suivis par Git.
 
 ## Dépendances
 
 - PHP >= 7.0
 - MySQL/MariaDB
 - Serveur web (Apache, Nginx, ...)
-
-## Sécurité
-
-- Les fichiers sensibles et de configuration sont exclus du versionnement (`.gitignore`).
-- Les sauvegardes et fichiers de base de données ne sont pas suivis par Git.
 
 ## Sauvegardes
 
