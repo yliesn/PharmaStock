@@ -82,3 +82,28 @@ Les sauvegardes de la base de données sont stockées dans le dossier `backup/` 
 ## Auteurs
 
 - Nejara Ylies
+
+## Fonctionnalités à venir
+
+- Génération automatique de rapports PDF
+- Statistiques avancées sur les mouvements et consommations
+- Gestion multi-dépôts (plusieurs lieux de stockage)
+- Système de notifications par email/SMS
+- Interface mobile responsive améliorée
+- Journal d’audit détaillé (logs d’actions)
+- Intégration possible avec d’autres systèmes (API)
+- Système de gestion des inventaires physiques
+- Gestion des alertes personnalisées (par type de produit, par utilisateur)
+- Tableau de bord personnalisable
+- Exportation/importation avancée (formats multiples, automatisation)
+- Historique complet des modifications (traçabilité)
+- Gestion des accès par groupes d’utilisateurs
+- Archivage automatique des mouvements anciens
+- Prise en charge du multilingue (internationalisation)
+- Génération de QR codes ou codes-barres pour les fournitures
+- Système de recherche avancée et filtres dynamiques
+- Prise en charge des unités multiples (ex : boîtes, pièces, litres)
+- Planification automatique des commandes selon seuils
+- Support pour API mobile dédiée
+
+N’hésitez pas à proposer d’autres idées ou à contribuer !
