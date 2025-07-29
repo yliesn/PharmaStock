@@ -462,6 +462,15 @@ include_once 'includes/header.php';
     .text-gray-800 {
         color: #5a5c69;
     }
+    /* Effet hover sur les cartes d'infos */
+    .hover-effect {
+        transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .hover-effect:hover {
+        box-shadow: 0 8px 24px rgba(80, 80, 80, 0.15), 0 1.5px 6px rgba(80, 80, 80, 0.10);
+        transform: translateY(-4px) scale(1.03);
+        z-index: 2;
+    }
 </style>
 
 <?php
