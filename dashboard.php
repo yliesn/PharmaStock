@@ -337,7 +337,7 @@ include_once 'includes/header.php';
                                     </td>
                                     <td class="text-center"><?php echo $item['seuil_alerte'] ? number_format($item['seuil_alerte'], 0, ',', ' ') : '-'; ?></td>
                                     <td class="text-center">
-                                        <span class="badge bg-success">Commandé</span>
+                                        <span class="badge bg-info">Commandé</span>
                                     </td>
                                     <td>
                                         <div class="btn-group btn-group-sm">
@@ -367,7 +367,7 @@ include_once 'includes/header.php';
         </div>
     </div>
     <!-- Activité récente -->
-    <div class="card shadow mb-4">
+    <!-- <div class="card shadow mb-4">
         <div class="card-header bg-info text-white">
             <h5 class="m-0 font-weight-bold"><i class="fas fa-history me-2"></i>Activité récente</h5>
         </div>
@@ -420,7 +420,7 @@ include_once 'includes/header.php';
                 </div>
             <?php endif; ?>
         </div>
-    </div>
+    </div> -->
 
     <!-- Carte de présentation -->
     <div class="card shadow">

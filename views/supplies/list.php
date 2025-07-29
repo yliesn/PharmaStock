@@ -24,7 +24,7 @@ $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $filter = isset($_GET['filter']) ? $_GET['filter'] : 'all';
 
 // Construction de la requête SQL de base
-$sql = "SELECT id, reference, designation, description, quantite_stock, seuil_alerte FROM FOURNITURE";
+$sql = "SELECT id, reference, designation, description, quantite_stock, seuil_alerte, commande_en_cours FROM FOURNITURE";
 $params = [];
 
 // Ajout des conditions de recherche et filtrage
@@ -36,8 +36,13 @@ if (!empty($search)) {
     if ($filter === 'low') {
         $sql .= " AND quantite_stock <= seuil_alerte AND seuil_alerte IS NOT NULL";
     }
+    if ($filter === 'ordered') {
+        $sql .= " AND commande_en_cours = True"; // Supposons que cette colonne existe pour indiquer une commande en cours
+    }
 } elseif ($filter === 'low') {
     $sql .= " WHERE quantite_stock <= seuil_alerte AND seuil_alerte IS NOT NULL";
+} elseif ($filter === 'ordered') {
+    $sql .= " WHERE commande_en_cours = True";
 }
 
 // Ordre de tri
@@ -94,6 +99,7 @@ include_once ROOT_PATH . '/includes/header.php';
                     <select class="form-select" name="filter" onchange="this.form.submit()">
                         <option value="all" <?php echo $filter === 'all' ? 'selected' : ''; ?>>Toutes les fournitures</option>
                         <option value="low" <?php echo $filter === 'low' ? 'selected' : ''; ?>>Stock bas</option>
+                        <option value="ordered" <?php echo $filter === 'ordered' ? 'selected' : ''; ?>>Commande en cours</option>
                     </select>
                 </div>
                 <div class="col-md-2">
@@ -125,6 +131,8 @@ include_once ROOT_PATH . '/includes/header.php';
                     <i class="fas fa-info-circle me-2"></i>
                     <?php if (!empty($search) || $filter === 'low'): ?>
                         Aucune fourniture trouvée avec ces critères.
+                    <?php elseif ($filter === 'ordered'): ?>
+                        Aucune fourniture en commande.
                     <?php else: ?>
                         Aucune fourniture enregistrée dans le système.
                     <?php endif; ?>
@@ -162,14 +170,18 @@ include_once ROOT_PATH . '/includes/header.php';
                                     </td>
                                     <td>
                                         <?php 
-                                        if ($supply['seuil_alerte'] && $supply['quantite_stock'] <= $supply['seuil_alerte']) {
-                                            if ($supply['quantite_stock'] == 0) {
-                                                echo '<span class="badge bg-danger">Rupture</span>';
+                                        if ($supply['commande_en_cours']) {
+                                            echo ' <span class="badge bg-info">Commandé</span>';
+                                        }else { 
+                                            if ($supply['seuil_alerte'] && $supply['quantite_stock'] <= $supply['seuil_alerte']) {
+                                                if ($supply['quantite_stock'] == 0) {
+                                                    echo '<span class="badge bg-danger">Rupture</span>';
+                                                } else {
+                                                    echo '<span class="badge bg-warning text-dark">Stock bas</span>';
+                                                }
                                             } else {
-                                                echo '<span class="badge bg-warning text-dark">Stock bas</span>';
+                                                echo '<span class="badge bg-success">Normal</span>';
                                             }
-                                        } else {
-                                            echo '<span class="badge bg-success">Normal</span>';
                                         }
                                         ?>
                                     </td>
