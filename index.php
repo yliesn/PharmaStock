@@ -93,6 +93,7 @@ if (isset($_SESSION['error_message'])) {
             color: #6c757d;
         }
     </style>
+    <meta name="robots" content="noindex">
 
     <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">

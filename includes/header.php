@@ -169,6 +169,7 @@ if ($_SESSION['user_role'] === 'VISITEUR') {
             margin-bottom: 0;
         }
     </style>
+    <meta name="robots" content="noindex">
     <!-- PWA Manifest -->
     <link rel="manifest" href="<?php echo BASE_URL; ?>/manifest.json">
     <meta name="theme-color" content="#198754">
