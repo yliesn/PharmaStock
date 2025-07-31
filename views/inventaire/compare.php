@@ -36,14 +36,19 @@ try {
     <title>Comparaison Inventaire</title>
     <link rel="stylesheet" href="../../assets/css/style.css">
     <style>
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin: 32px 0;
+        }
         .card-inventaire {
             border: 1px solid #ccc;
             border-radius: 8px;
-            margin: 16px auto;
             padding: 20px;
-            max-width: 400px;
             box-shadow: 0 2px 8px #eee;
             background: #fafbfc;
+            max-width: 100%;
         }
         .card-inventaire h3 {
             margin-top: 0;
@@ -58,12 +63,13 @@ try {
 </head>
 <body>
 <?php include '../../includes/header.php'; ?>
-<h1>Comparaison de l'inventaire du <?= htmlspecialchars(date('d/m/Y H:i', strtotime($inventaire['date_inventaire']))) ?></h1>
+<h1>Inventaire du <?= htmlspecialchars(date('d/m/Y H:i', strtotime($inventaire['date_inventaire']))) ?></h1>
 <p>Effectué par : <?= htmlspecialchars($inventaire['prenom'] . ' ' . $inventaire['nom']) ?></p>
 <?php if (!empty($inventaire['commentaire'])): ?>
     <p><strong>Commentaire :</strong> <?= nl2br(htmlspecialchars($inventaire['commentaire'])) ?></p>
 <?php endif; ?>
 
+<div class="cards-grid">
 <?php foreach ($lignes as $ligne):
     if ((int)$ligne['quantite_physique'] === -1) {
 ?>
@@ -87,6 +93,7 @@ try {
         </p>
     </div>
 <?php endforeach; ?>
+</div>
 
 <a href="create.php">&#8592; Faire un nouvel inventaire</a>
 <?php include '../../includes/footer.php'; ?>
