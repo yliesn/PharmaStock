@@ -66,6 +66,26 @@ CREATE TABLE MOUVEMENT_STOCK (
     CONSTRAINT fk_mouvement_utilisateur FOREIGN KEY (id_utilisateur) REFERENCES UTILISATEUR(id) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE INVENTAIRE (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    date_inventaire DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    utilisateur_id INT NOT NULL,
+    commentaire TEXT,
+    FOREIGN KEY (utilisateur_id) REFERENCES UTILISATEUR(id)
+);
+
+CREATE TABLE INVENTAIRE_LIGNE (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    inventaire_id INT NOT NULL,
+    fourniture_id INT NOT NULL,
+    quantite_theorique INT NOT NULL,
+    quantite_physique INT NOT NULL,
+    ecart INT AS (quantite_physique - quantite_theorique) STORED,
+    commentaire TEXT,
+    FOREIGN KEY (inventaire_id) REFERENCES INVENTAIRE(id),
+    FOREIGN KEY (fourniture_id) REFERENCES FOURNITURE(id)
+);
+
 -- Création d'un index sur les colonnes fréquemment utilisées pour les recherches
 CREATE INDEX idx_fourniture_reference ON FOURNITURE(reference);
 CREATE INDEX idx_mouvement_date ON MOUVEMENT_STOCK(date_mouvement);
