@@ -233,6 +233,11 @@ if ($_SESSION['user_role'] === 'VISITEUR') {
                             <li><a class="dropdown-item" href="<?php echo BASE_URL; ?>/views/stock/exit.php">Sortie de stock</a></li>
                         </ul>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?php echo BASE_URL; ?>/views/inventaire/index.php">
+                            <i class="fas fa-warehouse me-1"></i> Inventaire
+                        </a>
+                    </li>
                     <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'ADMIN'): ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="movementsDropdown" role="button" data-bs-toggle="dropdown">
@@ -292,4 +297,4 @@ if ($_SESSION['user_role'] === 'VISITEUR') {
             position: 'top-right',
             duration: 5000
         });
-    </script>
+    </script

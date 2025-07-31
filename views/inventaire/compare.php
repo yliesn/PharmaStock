@@ -29,73 +29,51 @@ try {
     redirect(BASE_URL . '/views/inventaire/create.php');
 }
 ?>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Comparaison Inventaire</title>
-    <link rel="stylesheet" href="../../assets/css/style.css">
-    <style>
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 24px;
-            margin: 32px 0;
-        }
-        .card-inventaire {
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 8px #eee;
-            background: #fafbfc;
-            max-width: 100%;
-        }
-        .card-inventaire h3 {
-            margin-top: 0;
-        }
-        .ecart {
-            font-weight: bold;
-        }
-        .ecart.positif { color: #2e7d32; }
-        .ecart.negatif { color: #c62828; }
-        .ecart.zero { color: #888; }
-    </style>
-</head>
-<body>
 <?php include '../../includes/header.php'; ?>
-<h1>Inventaire du <?= htmlspecialchars(date('d/m/Y H:i', strtotime($inventaire['date_inventaire']))) ?></h1>
-<p>Effectué par : <?= htmlspecialchars($inventaire['prenom'] . ' ' . $inventaire['nom']) ?></p>
-<?php if (!empty($inventaire['commentaire'])): ?>
-    <p><strong>Commentaire :</strong> <?= nl2br(htmlspecialchars($inventaire['commentaire'])) ?></p>
-<?php endif; ?>
-
-<div class="cards-grid">
-<?php foreach ($lignes as $ligne):
-    if ((int)$ligne['quantite_physique'] === -1) {
-?>
-    <div class="card-inventaire">
-        <h3><?= htmlspecialchars($ligne['designation']) ?> <small>(<?= htmlspecialchars($ligne['reference']) ?>)</small></h3>
-        <p><strong>Stock théorique :</strong> <?= (int)$ligne['quantite_theorique'] ?></p>
-        <p style="color:#888;"><em>Fourniture passée (non inventoriée)</em></p>
+<div class="container py-4">
+    <h1 class="mb-3 text-center">Inventaire du <?= htmlspecialchars(date('d/m/Y H:i', strtotime($inventaire['date_inventaire']))) ?></h1>
+    <p class="text-center mb-2">Effectué par : <strong><?= htmlspecialchars($inventaire['prenom'] . ' ' . $inventaire['nom']) ?></strong></p>
+    <?php if (!empty($inventaire['commentaire'])): ?>
+        <div class="alert alert-info mx-auto mb-4" style="max-width:600px;">
+            <strong>Commentaire :</strong> <?= nl2br(htmlspecialchars($inventaire['commentaire'])) ?>
+        </div>
+    <?php endif; ?>
+    <div class="row g-4 justify-content-center">
+    <?php foreach ($lignes as $ligne):
+        if ((int)$ligne['quantite_physique'] === -1) {
+    ?>
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card h-100 border-secondary">
+                <div class="card-body">
+                    <h3 class="card-title h5 mb-2"><?= htmlspecialchars($ligne['designation']) ?> <small class="text-muted">(<?= htmlspecialchars($ligne['reference']) ?>)</small></h3>
+                    <p class="mb-1"><strong>Stock théorique :</strong> <?= (int)$ligne['quantite_theorique'] ?></p>
+                    <p class="text-muted fst-italic">Fourniture passée (non inventoriée)</p>
+                </div>
+            </div>
+        </div>
+    <?php
+            continue;
+        }
+        $ecart = (int)$ligne['quantite_physique'] - (int)$ligne['quantite_theorique'];
+        $ecart_class = $ecart > 0 ? 'text-success' : ($ecart < 0 ? 'text-danger' : 'text-secondary');
+    ?>
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="card-title h5 mb-2"><?= htmlspecialchars($ligne['designation']) ?> <small class="text-muted">(<?= htmlspecialchars($ligne['reference']) ?>)</small></h3>
+                    <p class="mb-1"><strong>Stock théorique :</strong> <?= (int)$ligne['quantite_theorique'] ?></p>
+                    <p class="mb-1"><strong>Quantité physique relevée :</strong> <?= (int)$ligne['quantite_physique'] ?></p>
+                    <p class="fw-bold <?= $ecart_class ?>">
+                        <strong>Écart :</strong> <?= $ecart > 0 ? '+' : '' ?><?= $ecart ?>
+                    </p>
+                </div>
+            </div>
+        </div>
+    <?php endforeach; ?>
     </div>
-<?php
-        continue;
-    }
-    $ecart = (int)$ligne['quantite_physique'] - (int)$ligne['quantite_theorique'];
-    $ecart_class = $ecart > 0 ? 'positif' : ($ecart < 0 ? 'negatif' : 'zero');
-?>
-    <div class="card-inventaire">
-        <h3><?= htmlspecialchars($ligne['designation']) ?> <small>(<?= htmlspecialchars($ligne['reference']) ?>)</small></h3>
-        <p><strong>Stock théorique :</strong> <?= (int)$ligne['quantite_theorique'] ?></p>
-        <p><strong>Quantité physique relevée :</strong> <?= (int)$ligne['quantite_physique'] ?></p>
-        <p class="ecart <?= $ecart_class ?>">
-            <strong>Écart :</strong> <?= $ecart > 0 ? '+' : '' ?><?= $ecart ?>
-        </p>
+    <div class="text-center mt-4">
+        <a href="create.php" class="btn btn-outline-primary">&#8592; Faire un nouvel inventaire</a>
     </div>
-<?php endforeach; ?>
 </div>
-
-<a href="create.php">&#8592; Faire un nouvel inventaire</a>
 <?php include '../../includes/footer.php'; ?>
-</body>
-</html>
+
