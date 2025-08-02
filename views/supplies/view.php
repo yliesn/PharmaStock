@@ -160,6 +160,17 @@ include_once ROOT_PATH . '/includes/header.php';
                             ?>
                         </div>
                     </div>
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <button id="barcode-btn" class="btn btn-primary me-2" type="button">
+                                <i class="fa-regular fa-file me-1"></i> Télécharger
+                            </button>
+                            <!-- SVG visible pour le code-barres -->
+                            <div class="mt-3">
+                                <svg id="barcode"></svg>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -279,3 +290,38 @@ include_once ROOT_PATH . '/includes/header.php';
 // Inclure le pied de page
 include_once ROOT_PATH . '/includes/footer.php';
 ?>
+<!-- JsBarcode et script de génération/téléchargement du code-barres -->
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+<script>
+// Génère le code-barres dès l'arrivée sur la page
+window.addEventListener('DOMContentLoaded', function() {
+    var reference = <?php echo json_encode($supply['reference']); ?>;
+    var desc = <?php echo json_encode($supply['designation']); ?>;
+    var svg = document.getElementById('barcode');
+    JsBarcode(svg, reference, {
+        format: "CODE128",
+        displayValue: true,
+        width: 2,
+        height: 40,
+        margin: 10,
+        text: desc
+    });
+});
+// Téléchargement au clic sur le bouton
+
+document.getElementById('barcode-btn').addEventListener('click', function() {
+    var reference = <?php echo json_encode($supply['reference']); ?>;
+    var svg = document.getElementById('barcode');
+    var serializer = new XMLSerializer();
+    var svgString = serializer.serializeToString(svg);
+    var blob = new Blob([svgString], {type: "image/svg+xml"});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = "barcode_" + reference + ".svg";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+});
+</script>

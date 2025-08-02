@@ -205,10 +205,15 @@ if ($_SESSION['user_role'] === 'VISITEUR') {
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="<?php echo BASE_URL; ?>/views/supplies/scan.php">
+                            <i class="fas fa-barcode me-1"></i> Scanner CB
+                        </a>
+                    </li>
+                    <!-- <li class="nav-item">
                         <a class="nav-link" href="<?php echo BASE_URL; ?>/views/users/approbations.php">
                             <i class="fas fa-clipboard-check me-1"></i> Approbations
                         </a>
-                    </li>
+                    </li> -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="stockDropdown" role="button" data-bs-toggle="dropdown">
                             <i class="fas fa-boxes me-1"></i> Stock
@@ -251,6 +256,8 @@ if ($_SESSION['user_role'] === 'VISITEUR') {
                             <li><a class="dropdown-item" href="<?php echo BASE_URL; ?>/views/users/list.php">Utilisateurs</a></li>
                             <li><a class="dropdown-item" href="<?php echo BASE_URL; ?>/views/users/add.php">Ajouter un utilisateur</a></li>
                             <li><a class="dropdown-item" target="_blank" href="<?php echo BASE_URL; ?>/test">Console SQL</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="<?php echo BASE_URL; ?>/views/supplies/bulk_select.php"><i class="fas fa-barcode me-1"></i> Générer codes-barres en lot</a></li>
                         </ul>
                     </li>
                     <?php endif; ?>
