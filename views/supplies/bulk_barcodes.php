@@ -33,8 +33,8 @@ $supplies = $stmt->fetchAll();
                 jsbarcode-format="CODE128"
                 jsbarcode-value="<?php echo htmlspecialchars($supply['reference']); ?>"
                 jsbarcode-textmargin="0"
-                jsbarcode-width="1"
-                jsbarcode-height="30"
+                jsbarcode-width="2"
+                jsbarcode-height="60"
                 jsbarcode-margin="10"
                 jsbarcode-text="<?php echo htmlspecialchars($supply['designation']); ?>"
             ></svg>
