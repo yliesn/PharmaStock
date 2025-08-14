@@ -111,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     
                     // Récupérer les informations mises à jour
                     if ($supply_id) {
-                        $stmt = $db->prepare("SELECT id, reference, designation, quantite_stock, seuil_alerte FROM FOURNITURE WHERE id = ?");
+                        $stmt = $db->prepare("SELECT id, reference, designation, quantite_stock, seuil_alerte, commande_en_cours FROM FOURNITURE WHERE id = ?");
                         $stmt->execute([$supply_id]);
                         $selected_supply = $stmt->fetch();
                     }

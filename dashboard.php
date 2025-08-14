@@ -15,7 +15,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 try {
     $db = getDbConnection();
     $stmt = $db->query("
-        SELECT id, reference, designation, description, quantite_stock, seuil_alerte
+        SELECT id, reference, designation, description, quantite_stock, seuil_alerte, commande_en_cours
         FROM FOURNITURE
         WHERE seuil_alerte IS NOT NULL
         AND quantite_stock <= seuil_alerte
