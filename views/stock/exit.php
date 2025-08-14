@@ -13,8 +13,12 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     redirect('index.php');
 }
 
-// Définir ROOT_PATH pour le header
-define('ROOT_PATH', dirname(dirname(__DIR__)));
+
+if (!defined('ROOT_PATH')) {
+    // Définir ROOT_PATH pour le header
+    define('ROOT_PATH', dirname(dirname(__DIR__)));
+}
+
 
 // Définir le titre de la page
 $page_title = "Sortie de stock";

@@ -17,7 +17,10 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 $page_title = "Ajouter une fourniture";
 
 // Définir ROOT_PATH pour le header
-define('ROOT_PATH', dirname(dirname(__DIR__)));
+if (!defined('ROOT_PATH')) {
+    // Définir ROOT_PATH pour le header
+    define('ROOT_PATH', dirname(dirname(__DIR__)));
+}
 
 // Traitement du formulaire si soumis
 $message = '';

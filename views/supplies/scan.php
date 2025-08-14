@@ -7,7 +7,10 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     redirect('index.php');
 }
 
-define('ROOT_PATH', dirname(dirname(__DIR__)));
+if (!defined('ROOT_PATH')) {
+    // Définir ROOT_PATH pour le header
+    define('ROOT_PATH', dirname(dirname(__DIR__)));
+}
 $page_title = "Scanner un code-barres";
 include_once ROOT_PATH . '/includes/header.php';
 ?>

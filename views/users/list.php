@@ -18,7 +18,10 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true || $_SESSI
 $page_title = "Gestion des utilisateurs";
 
 // Définir ROOT_PATH pour le header
-define('ROOT_PATH', dirname(dirname(__DIR__)));
+if (!defined('ROOT_PATH')) {
+    // Définir ROOT_PATH pour le header
+    define('ROOT_PATH', dirname(dirname(__DIR__)));
+}
 
 // Traitement de la désactivation/activation d'un utilisateur si demandé
 if (isset($_POST['toggle_status']) && isset($_POST['user_id']) && isset($_POST['csrf_token'])) {

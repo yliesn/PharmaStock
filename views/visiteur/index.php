@@ -11,7 +11,10 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true || $_SESSI
 
 // Définir ROOT_PATH pour l'inclusion éventuelle du footer
 if (!defined('ROOT_PATH')) {
+    if (!defined('ROOT_PATH')) {
+    // Définir ROOT_PATH pour le header
     define('ROOT_PATH', dirname(dirname(__DIR__)));
+}
 }
 
 $page_title = "Espace Visiteur";
