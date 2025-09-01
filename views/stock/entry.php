@@ -210,41 +210,36 @@ include_once ROOT_PATH . '/includes/header.php';
                         
                         <!-- Sélection de la fourniture si non déjà sélectionnée -->
                         <?php if (!$selected_supply): ?>
-                            <!-- Barre de recherche -->
+                            <!-- Remplacement de la barre de recherche par le scanner de code-barres -->
                             <div class="mb-3">
-                                <label for="search" class="form-label">Rechercher une fourniture</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="search" placeholder="Référence ou désignation...">
-                                    <button class="btn btn-outline-primary" type="button" id="clearSearch">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                                <div class="form-text">Tapez pour filtrer la liste des fournitures</div>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="supply_id" class="form-label">Fourniture <span class="text-danger">*</span></label>
-                                <select class="form-select" id="supply_id" name="supply_id" required>
-                                    <option value="">Sélectionner une fourniture</option>
-                                    <?php foreach ($supplies as $supply): ?>
-                                        <option value="<?php echo $supply['id']; ?>" 
-                                                data-reference="<?php echo htmlspecialchars(strtolower($supply['reference'])); ?>"
-                                                data-designation="<?php echo htmlspecialchars(strtolower($supply['designation'])); ?>"
-                                                <?php echo $supply_id == $supply['id'] ? 'selected' : ''; ?>>
-                                            <?php echo htmlspecialchars($supply['reference'] . ' - ' . $supply['designation']); ?>
-                                            <?php if ($supply['seuil_alerte'] && $supply['quantite_stock'] <= $supply['seuil_alerte']): ?>
-                                                (Stock bas: <?php echo $supply['quantite_stock']; ?>)
-                                            <?php else: ?>
-                                                (Stock: <?php echo $supply['quantite_stock']; ?>)
-                                            <?php endif; ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                                <div class="invalid-feedback">Veuillez sélectionner une fourniture.</div>
+                                <label for="barcode-scanner" class="form-label">Scanner un code-barres</label>
+                                <div id="barcode-scanner" ></div>
+                                <div id="scan-result" class="mt-3"></div>
                             </div>
                         <?php else: ?>
                             <input type="hidden" name="supply_id" value="<?php echo $selected_supply['id']; ?>">
                         <?php endif; ?>
+                        
+                        <!-- Réintégration de la liste déroulante pour la sélection manuelle -->
+                        <div class="mb-3">
+                            <label for="supply_id" class="form-label">Fourniture <span class="text-danger">*</span></label>
+                            <select class="form-select" id="supply_id" name="supply_id" required>
+                                <option value="">Sélectionner une fourniture</option>
+                                <?php foreach ($supplies as $supply): ?>
+                                    <option value="<?php echo $supply['id']; ?>" 
+                                            data-reference="<?php echo htmlspecialchars(strtolower($supply['reference'])); ?>"
+                                            data-designation="<?php echo htmlspecialchars(strtolower($supply['designation'])); ?>">
+                                        <?php echo htmlspecialchars($supply['reference'] . ' - ' . $supply['designation']); ?>
+                                        <?php if ($supply['seuil_alerte'] && $supply['quantite_stock'] <= $supply['seuil_alerte']): ?>
+                                            (Stock bas: <?php echo $supply['quantite_stock']; ?>)
+                                        <?php else: ?>
+                                            (Stock: <?php echo $supply['quantite_stock']; ?>)
+                                        <?php endif; ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <div class="invalid-feedback">Veuillez sélectionner une fourniture.</div>
+                        </div>
                         
                         <!-- Quantité et date -->
                         <div class="row mb-3">
@@ -301,6 +296,54 @@ include_once ROOT_PATH . '/includes/header.php';
         </div>
     </div>
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+<script>
+window.addEventListener('DOMContentLoaded', function() {
+    var resultNode = document.getElementById('scan-result');
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(function(stream) {
+            Quagga.init({
+                inputStream: {
+                    name: "Live",
+                    type: "LiveStream",
+                    target: document.querySelector('#barcode-scanner'),
+                    constraints: {
+                        facingMode: "environment"
+                    }
+                },
+                decoder: {
+                    readers: ["code_128_reader", "ean_reader", "ean_8_reader", "code_39_reader", "upc_reader", "upc_e_reader"]
+                },
+                locate: true
+            }, function(err) {
+                if (err) {
+                    resultNode.innerHTML = '<div class="alert alert-danger">Erreur caméra : ' + err + '</div>';
+                    return;
+                }
+                Quagga.start();
+            });
+        })
+        .catch(function(err) {
+            document.getElementById('scan-result').innerHTML = '<div class="alert alert-danger">Accès à la caméra refusé ou indisponible : ' + err.message + '</div>';
+        });
+    Quagga.onDetected(function(data) {
+        var code = data.codeResult.code;
+        // resultNode.innerHTML = '<div class="alert alert-success">Code scanné : <b>' + code + '</b></div>';
+        var supplySelect = document.querySelector('select[name="supply_id"]');
+        for (var i = 0; i < supplySelect.options.length; i++) {
+            if (supplySelect.options[i].text.includes(code)) {
+                supplySelect.selectedIndex = i;
+                break;
+            }
+        }
+        // Redémarrer le scanner après un court délai
+        setTimeout(function() {
+            Quagga.start();
+        }, 1000);
+    });
+});
+</script>
 
 <?php
 // Script spécifique à la page
@@ -368,3 +411,24 @@ $page_specific_script = "
 // Inclure le pied de page
 include_once ROOT_PATH . '/includes/footer.php';
 ?>
+<style>
+#barcode-scanner video, #barcode-scanner canvas {
+    width: 100% !important;
+    max-width: 400px !important;
+    height: 200px !important;
+    object-fit: cover;
+    margin: auto;
+    display: block;
+    border-radius: 8px;
+}
+#barcode-scanner {
+    width: 100%;
+    max-width: 400px;
+    height: 200px;
+    margin: auto;
+    position: relative;
+    overflow: hidden;
+    background: #222;
+    border-radius: 8px;
+}
+</style>
