@@ -345,6 +345,35 @@ window.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+<!-- <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const supplyId = urlParams.get('supply_id');
+        const supplySelect = document.getElementById('supply_id');
+
+        if (supplyId && supplySelect) {
+            supplySelect.style.display = 'none'; // Masquer le menu déroulant
+        }
+    });
+</script> -->
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const supplyId = urlParams.get('supply_id');
+        const supplySelect = document.getElementById('supply_id');
+
+        if (supplyId && supplySelect) {
+            Array.from(supplySelect.options).forEach(option => {
+                if (option.value === supplyId) {
+                    option.selected = true;
+                    supplySelect.style.display = 'none'; // Masquer le menu déroulant
+                }
+            });
+        }
+    });
+</script>
+
 <?php
 // Script spécifique à la page
 // Script spécifique à la page
