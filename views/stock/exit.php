@@ -13,6 +13,16 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     redirect('index.php');
 }
 
+// Vérifier si le scanner est activé dans les paramètres
+try {
+    $db = getDbConnection();
+    $stmt = $db->prepare("SELECT value FROM FEATURE_TOGGLES WHERE feature_key = 'enable_barcode_scanner' LIMIT 1");
+    $stmt->execute();
+    $scanner_enabled = $stmt->fetchColumn();
+} catch (Exception $e) { 
+    $scanner_enabled = false; 
+}
+
 
 if (!defined('ROOT_PATH')) {
     // Définir ROOT_PATH pour le header
@@ -226,9 +236,11 @@ include_once ROOT_PATH . '/includes/header.php';
                             <!-- Remplacement de la barre de recherche par le scanner de code-barres -->
                             <?php if (!$selected_supply): ?>
                                 <div class="mb-3">
+                                    <?php if ($scanner_enabled): ?>
                                     <label for="barcode-scanner" class="form-label">Scanner un code-barres</label>
                                     <div id="barcode-scanner"></div>
                                     <div id="scan-result" class="mt-3"></div>
+                                    <?php endif; ?>
                                 </div>
                             <?php endif; ?>
                             <!-- Sélection de la fourniture si non déjà sélectionnée -->
@@ -297,6 +309,7 @@ include_once ROOT_PATH . '/includes/header.php';
                         
 
 
+                        <?php if ($scanner_enabled): ?>
                         <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
                         <script>
                         window.addEventListener('DOMContentLoaded', function() {
@@ -342,6 +355,8 @@ include_once ROOT_PATH . '/includes/header.php';
                                 }, 1000);
                             });
                         });
+                        </script>
+                        <?php endif; ?>
                         </script>
                     <?php endif; ?>
                 </div>

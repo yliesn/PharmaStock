@@ -6,6 +6,17 @@ require_once '../../config/config.php';
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     redirect('index.php');
 }
+// Vérifier si la fonctionnalité scanner est activée
+try {
+    $db = getDbConnection();
+    $stmt = $db->prepare("SELECT value FROM FEATURE_TOGGLES WHERE feature_key = 'enable_barcode_scanner' LIMIT 1");
+    $stmt->execute();
+    $toggle = $stmt->fetchColumn();
+} catch (Exception $e) { $toggle = 0; }
+if (!$toggle) {
+    $_SESSION['error_message'] = "La fonctionnalité scanner est désactivée.";
+    redirect('dashboard.php');
+}
 
 if (!defined('ROOT_PATH')) {
     // Définir ROOT_PATH pour le header
