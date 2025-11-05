@@ -122,10 +122,21 @@ try {
                         </div>
 
                         <!-- Modal de demande de sortie de stock -->
+<?php
+// Vérifier si les approbations sont activées
+try {
+    $db = getDbConnection();
+    $stmt = $db->prepare("SELECT value FROM FEATURE_TOGGLES WHERE feature_key = 'enable_approvals' LIMIT 1");
+    $stmt->execute();
+    $approvals_enabled = $stmt->fetchColumn();
+} catch (Exception $e) { 
+    $approvals_enabled = false;
+}
+if ($approvals_enabled) : ?>
                         <div class="modal fade" id="sortieModal" tabindex="-1" aria-labelledby="sortieModalLabel" aria-hidden="true">
                           <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content border-0 shadow-lg">
-                              <form method="post" action="/api/make_approbation.php">
+                              <form method="post" action="/api/make_approbation.php"><?php endif; ?>
                                 <div class="modal-header bg-info text-white">
                                   <h5 class="modal-title d-flex align-items-center" id="sortieModalLabel">
                                     <i class="fas fa-paper-plane me-2"></i> Demande de sortie de stock
