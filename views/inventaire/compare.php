@@ -7,6 +7,12 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     redirect(BASE_URL . '/auth/login.php');
 }
 
+// Vérifier si la fonctionnalité d'inventaire est activée
+if (!isFeatureEnabled('enable_inventory')) {
+    $_SESSION['error_message'] = "La fonctionnalité d'inventaire est actuellement désactivée.";
+    redirect(BASE_URL . '/dashboard.php');
+}
+
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 if ($id <= 0) {
     $_SESSION['error_message'] = "Inventaire non trouvé.";

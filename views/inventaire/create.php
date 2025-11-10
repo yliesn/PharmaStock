@@ -5,13 +5,19 @@ require_once '../../includes/functions.php';
 
 // Vérifier si l'utilisateur est connecté
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-    redirect('/auth/login.php');
+    redirect(BASE_URL . '/auth/login.php');
+}
+
+// Vérifier si la fonctionnalité d'inventaire est activée
+if (!isFeatureEnabled('enable_inventory')) {
+    $_SESSION['error_message'] = "La fonctionnalité d'inventaire est actuellement désactivée.";
+    redirect(BASE_URL . '/dashboard.php');
 }
 
 // Récupérer la liste des fournitures
 try {
     $db = getDbConnection();
-    $stmt = $db->query("SELECT id, reference, designation, quantite_stock FROM FOURNITURE ORDER BY designation ASC");
+    $stmt = $db->query("SELECT id, reference, designation, quantite_stock FROM FOURNITURE");
     $fournitures = $stmt->fetchAll();
 } catch (Exception $e) {
     $_SESSION['error_message'] = "Erreur lors de la récupération des fournitures.";

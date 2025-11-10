@@ -6,8 +6,14 @@ require_once '../../includes/functions.php';
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     redirect(BASE_URL . '/auth/login.php');
 }
+
+// Vérifier si la fonctionnalité d'inventaire est activée
+if (!isFeatureEnabled('enable_inventory')) {
+    $_SESSION['error_message'] = "La fonctionnalité d'inventaire est actuellement désactivée.";
+    redirect('dashboard.php');
+}
 // Définir ROOT_PATH pour le header
-define('ROOT_PATH', dirname(dirname(__DIR__)));
+// define('ROOT_PATH', dirname(dirname(__DIR__)));
 
 // Récupérer la liste des inventaires
 try {

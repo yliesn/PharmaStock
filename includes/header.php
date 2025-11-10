@@ -25,6 +25,16 @@ try {
     $dark_mode_enabled = false;
 }
 
+try {
+    $db = getDbConnection();
+    $stmt = $db->prepare("SELECT value FROM FEATURE_TOGGLES WHERE feature_key = 'enable_inventory' LIMIT 1");
+    $stmt->execute();
+    $inventory_enabled = $stmt->fetchColumn();
+} catch (Exception $e) { 
+    $inventory_enabled = false;
+}
+
+
 // Vérifier si l'utilisateur a les droits d'accès
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     $_SESSION['error_message'] = "Vous n'avez pas les droits nécessaires pour accéder à cette page.";
@@ -370,11 +380,13 @@ if ($_SESSION['user_role'] === 'VISITEUR') {
                             <li><a class="dropdown-item" href="<?php echo BASE_URL; ?>/views/stock/exit.php">Sortie de stock</a></li>
                         </ul>
                     </li>
+                    <?php if ($inventory_enabled): ?>
                     <li class="nav-item">
                         <a class="nav-link" href="<?php echo BASE_URL; ?>/views/inventaire/index.php">
                             <i class="fas fa-warehouse me-1"></i> Inventaire
                         </a>
                     </li>
+                    <?php endif; ?>
                     <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'ADMIN'): ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="movementsDropdown" role="button" data-bs-toggle="dropdown">
