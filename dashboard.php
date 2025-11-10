@@ -183,9 +183,7 @@ include_once 'includes/header.php';
                 </div>
             </a>
         </div>
-        <?php endif; ?>
         <script>
-        <?php if ($approvals_enabled && in_array($_SESSION['user_role'], ['UTILISATEUR', 'ADMIN'])) : ?>
         document.addEventListener('DOMContentLoaded', function() {
             fetch('<?php echo BASE_URL; ?>/api/approbations_count.php')
                 .then(r => r.json())
@@ -196,9 +194,8 @@ include_once 'includes/header.php';
                     document.getElementById('approbations-count').textContent = '?';
                 });
         });
-        <?php endif; ?>
         </script>
-        <?php if ($approvals_enabled =! TRUE) : ?>
+        <?php else : ?>
         <!-- Carte des commandes en cours -->
         <div class="col-xl-3 col-md-6 mb-4">
             <a href="<?php echo BASE_URL; ?>/views/supplies/list.php?filter=ordered" class="text-decoration-none">
