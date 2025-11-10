@@ -133,3 +133,27 @@ DELIMITER ;
 
 -- -- Réactiver les contraintes de clé étrangère
 -- SET FOREIGN_KEY_CHECKS = 1;
+
+-- Table pour les feature toggles (activé/désactivé des fonctionnalités)
+DROP TABLE IF EXISTS FEATURE_TOGGLES;
+CREATE TABLE FEATURE_TOGGLES (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    feature_key VARCHAR(100) NOT NULL UNIQUE,
+    label VARCHAR(255) NOT NULL,
+    value TINYINT(1) NOT NULL DEFAULT 0,
+    description TEXT NULL,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Toggles de fonctionnalités système
+INSERT INTO FEATURE_TOGGLES (feature_key, label, value, description) VALUES
+('enable_barcode_scanner', 'Activer le scanner de codes-barres', 1, 'Permet l''utilisation du scanner de codes-barres dans l''application'),
+('enable_bulk_import', 'Activer import en lot', 0, 'Permet l''import en masse des fournitures via fichier CSV'),
+('enable_stock_alerts', 'Activer alertes de stock', 1, 'Envoie des notifications quand le stock atteint le seuil d''alerte'),
+('enable_auto_ordering', 'Activer commandes automatiques', 0, 'Marque automatiquement les articles à commander quand ils atteignent le seuil'),
+('require_approval_for_exits', 'Approbation des sorties', 1, 'Exige une approbation pour les sorties de stock importantes'),
+('enable_export_pdf', 'Export PDF', 1, 'Permet l''export des rapports et listes en format PDF'),
+('enable_dark_mode', 'Mode sombre', 1, 'Active l''option du thème sombre dans l''interface'),
+('enable_movement_history', 'Historique détaillé', 1, 'Conserve un historique détaillé des mouvements de stock'),
+('enable_advanced_search', 'Recherche avancée', 0, 'Active les fonctionnalités de recherche avancée dans les listes'),
+('enable_email_notifications', 'Notifications par email', 0, 'Envoie des notifications par email pour les événements importants');

@@ -2,13 +2,32 @@
 // Page de gestion des demandes de sortie de stock à approuver (pour UTILISATEUR/ADMIN)
 require_once '../../config/config.php';
 
+// Vérifier si les approbations sont activées
+try {
+    $db = getDbConnection();
+    $stmt = $db->prepare("SELECT value FROM FEATURE_TOGGLES WHERE feature_key = 'enable_approvals' LIMIT 1");
+    $stmt->execute();
+    $approvals_enabled = $stmt->fetchColumn();
+} catch (Exception $e) { 
+    $approvals_enabled = false;
+}
+
+if (!$approvals_enabled) {
+    $_SESSION['error_message'] = "Le système d'approbations est désactivé.";
+    redirect('dashboard.php');
+    exit;
+}
+
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true || ($_SESSION['user_role'] !== 'UTILISATEUR' && $_SESSION['user_role'] !== 'ADMIN')) {
     redirect(BASE_URL . '/index.php');
     exit;
 }
 
 if (!defined('ROOT_PATH')) {
+    if (!defined('ROOT_PATH')) {
+    // Définir ROOT_PATH pour le header
     define('ROOT_PATH', dirname(dirname(__DIR__)));
+}
 }
 
 $page_title = "Approbations de sorties de stock";

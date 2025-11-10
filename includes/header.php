@@ -15,6 +15,16 @@ $nom = isset($_SESSION['user_nom']) ? htmlspecialchars($_SESSION['user_nom']) : 
 $prenom = isset($_SESSION['user_prenom']) ? htmlspecialchars($_SESSION['user_prenom']) : '';
 $role = isset($_SESSION['user_role']) ? htmlspecialchars($_SESSION['user_role']) : '';
 
+// Vérifier si le mode sombre est activé dans les paramètres
+try {
+    $db = getDbConnection();
+    $stmt = $db->prepare("SELECT value FROM FEATURE_TOGGLES WHERE feature_key = 'enable_dark_mode' LIMIT 1");
+    $stmt->execute();
+    $dark_mode_enabled = $stmt->fetchColumn();
+} catch (Exception $e) { 
+    $dark_mode_enabled = false;
+}
+
 // Vérifier si l'utilisateur a les droits d'accès
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     $_SESSION['error_message'] = "Vous n'avez pas les droits nécessaires pour accéder à cette page.";
@@ -22,7 +32,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 }
 if ($_SESSION['user_role'] === 'VISITEUR') {
     $_SESSION['error_message'] = "Espace réservé aux visiteurs.";
-    redirect('/views/visiteur/index.php');
+    redirect('views/visiteur/index.php');
 }
 ?>
 <!DOCTYPE html>
@@ -40,123 +50,223 @@ if ($_SESSION['user_role'] === 'VISITEUR') {
     
     <!-- Styles pour le mode sombre -->
     <style>
+        /**
+         * Variables de couleurs globales pour le mode sombre
+         * Modifiez ces variables pour changer les couleurs dans tout le thème
+         */
         :root {
+            /* Couleurs de base */
+            --dark-bg: #121212;          /* Fond principal */
+            --dark-surface: #2d2d2d;     /* Surface des cartes et éléments */
+            --dark-surface-light: #383838;/* Surface plus claire (hover) */
+            --dark-border: #444;         /* Bordures */
+            --dark-text: #e0e0e0;        /* Texte principal  */
+            --dark-text-muted: #adb5bd;  /* Texte secondaire */
+            
+            /* Couleurs spécifiques */
+            --dark-header: #1e1e1e;      /* En-têtes, navigation */
+            --dark-input: #2d2d2d;       /* Champs de formulaire */
+            --dark-hover: #3d3d3d;       /* État hover */
+            --dark-striped: #252525;     /* Lignes alternées */
+            
+            /* Couleurs Bootstrap originales */
             --bs-light: #f8f9fa;
             --bs-dark: #212529;
         }
         
+        /**
+         * Styles de base du mode sombre
+         * Fond et texte principaux
+         */
         body.dark-mode {
-            background-color: #121212;
-            color: #e0e0e0;
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
         }
         
-        /* Navigation */
+        /**
+         * Barre de navigation
+         * Menu principal et sous-menus
+         */
         body.dark-mode .navbar {
-            background-color: #1e1e1e !important;
+            background-color: var(--dark-header) !important;
         }
         
-        /* Cards */
+        /**
+         * Cartes (Cards)
+         * Utilisées pour les conteneurs principaux
+         */
         body.dark-mode .card {
-            background-color: #2d2d2d;
-            border-color: #444;
+            background-color: var(--dark-surface);
+            border-color: var(--dark-border);
         }
         body.dark-mode .card-header {
-            border-bottom-color: #444;
+            border-bottom-color: var(--dark-border);
         }
         
-        /* Tables */
+        /**
+         * Tableaux
+         * Styles pour tous les tableaux de données
+         */
         body.dark-mode .table {
-            color: #e0e0e0;
+            color: var(--dark-text);
+            background-color: var(--dark-surface);
         }
-        body.dark-mode .table-striped>tbody>tr:nth-of-type(odd) {
-            background-color: rgba(255, 255, 255, 0.05);
+        /* Cellules de tableau */
+        body.dark-mode .table th,
+        body.dark-mode .table td {
+            background-color: var(--dark-surface);
+            border-color: var(--dark-border);
         }
-        body.dark-mode .table-hover>tbody>tr:hover {
-            background-color: rgba(255, 255, 255, 0.075);
+        /* En-têtes de tableau */
+        body.dark-mode .table thead th {
+            background-color: var(--dark-header);
+            border-bottom-color: var(--dark-border);
+            color: #fff;
         }
+        /* Lignes alternées */
+        body.dark-mode .table-striped>tbody>tr:nth-of-type(odd),
+        body.dark-mode .table-striped>tbody>tr:nth-of-type(odd) td {
+            background-color: var(--dark-striped);
+        }
+        /* Effet hover sur les lignes */
+        body.dark-mode .table-hover>tbody>tr:hover,
+        body.dark-mode .table-hover>tbody>tr:hover td {
+            background-color: var(--dark-surface-light);
+        }
+        /* Variante claire des tableaux */
         body.dark-mode .table-light, 
         body.dark-mode .table-light>td, 
         body.dark-mode .table-light>th {
-            background-color: #343a40;
-            color: #e0e0e0;
+            background-color: var(--dark-surface);
+            color: var(--dark-text);
         }
         
-        /* Form controls */
+        /**
+         * Éléments de formulaire
+         * Champs texte, select, checkboxes
+         */
         body.dark-mode .form-control,
         body.dark-mode .form-select {
-            background-color: #2d2d2d;
-            border-color: #444;
-            color: #e0e0e0;
+            background-color: var(--dark-input);
+            border-color: var(--dark-border);
+            color: var(--dark-text);
         }
         body.dark-mode .form-control:focus,
         body.dark-mode .form-select:focus {
-            background-color: #2d2d2d;
-            color: #e0e0e0;
+            background-color: var(--dark-input);
+            color: var(--dark-text);
+        }
+        /* Cases à cocher dans les tableaux */
+        body.dark-mode .table input[type="checkbox"] {
+            background-color: var(--dark-surface);
+            border-color: #666;
         }
         
-        /* Text colors */
+        /**
+         * Textes et étiquettes
+         * Variations de couleur pour le texte
+         */
         body.dark-mode .text-muted {
-            color: #adb5bd !important;
+            color: var(--dark-text-muted) !important;
+        }
+        /* S'assurer que tous les textes sont bien visibles */
+        body.dark-mode .text-dark,
+        body.dark-mode .text-black-50,
+        body.dark-mode .text-body,
+        body.dark-mode td {
+            color: var(--dark-text) !important;
+        }
+        /* Style spécifique pour les références et codes */
+        body.dark-mode td span:not(.badge),
+        body.dark-mode td strong,
+        body.dark-mode .reference-text {
+            color: #fff !important;
         }
         
-        /* List groups */
+        /**
+         * Listes groupées
+         * Utilisées dans les menus et panneaux
+         */
         body.dark-mode .list-group-item {
-            background-color: #2d2d2d;
-            border-color: #444;
-            color: #e0e0e0;
+            background-color: var(--dark-surface);
+            border-color: var(--dark-border);
+            color: var(--dark-text);
         }
         
-        /* Alerts */
+        /**
+         * Alertes et notifications
+         * Messages système et retours utilisateur
+         */
         body.dark-mode .alert-success {
             background-color: #1c3a25;
             border-color: #2a5a3a;
             color: #d1e7dd;
         }
         
-        /* Badges */
+        /**
+         * Badges
+         * Étiquettes et indicateurs
+         */
         body.dark-mode .badge.bg-warning.text-dark {
             color: #ffc107 !important;
         }
         
-        /* Dropdown menus */
+        /**
+         * Menus déroulants
+         * Sous-menus et listes déroulantes
+         */
         body.dark-mode .dropdown-menu {
-            background-color: #2d2d2d;
-            border-color: #444;
+            background-color: var(--dark-surface);
+            border-color: var(--dark-border);
         }
         body.dark-mode .dropdown-item {
-            color: #e0e0e0;
+            color: var(--dark-text);
         }
         body.dark-mode .dropdown-item:hover, 
         body.dark-mode .dropdown-item:focus {
-            background-color: #3d3d3d;
+            background-color: var(--dark-hover);
             color: #fff;
         }
         body.dark-mode .dropdown-divider {
-            border-top-color: #444;
+            border-top-color: var(--dark-border);
         }
         
-        /* Footer */
+        /**
+         * Pied de page
+         */
         body.dark-mode footer.bg-light {
-            background-color: #1e1e1e !important;
-            color: #e0e0e0;
+            background-color: var(--dark-header) !important;
+            color: var(--dark-text);
         }
         
-        /* DataTables */
+        /**
+         * DataTables
+         * Styles spécifiques pour les tableaux dynamiques
+         */
         body.dark-mode .dataTables_wrapper .dataTables_length,
         body.dark-mode .dataTables_wrapper .dataTables_filter,
         body.dark-mode .dataTables_wrapper .dataTables_info,
         body.dark-mode .dataTables_wrapper .dataTables_processing,
         body.dark-mode .dataTables_wrapper .dataTables_paginate {
-            color: #e0e0e0;
+            color: var(--dark-text);
         }
         body.dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button {
-            color: #e0e0e0 !important;
+            color: var(--dark-text) !important;
         }
         body.dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
             color: #666 !important;
         }
+        /* En-têtes triables */
+        body.dark-mode .table thead .sorting,
+        body.dark-mode .table thead .sorting_asc,
+        body.dark-mode .table thead .sorting_desc {
+            background-color: var(--dark-header);
+        }
         
-        /* Dark mode toggle switch styles */
+        /**
+         * Switch du mode sombre
+         * Styles du bouton toggle
+         */
         .dark-mode-toggle {
             display: flex;
             align-items: center;
@@ -204,11 +314,38 @@ if ($_SESSION['user_role'] === 'VISITEUR') {
                             <i class="fas fa-tachometer-alt me-1"></i> Tableau de bord
                         </a>
                     </li>
+                    <?php
+                    // Afficher le lien Scanner CB seulement si le toggle est activé
+                    try {
+                        $db = getDbConnection();
+                        $stmt = $db->prepare("SELECT value FROM FEATURE_TOGGLES WHERE feature_key = 'enable_barcode_scanner' LIMIT 1");
+                        $stmt->execute();
+                        $toggle = $stmt->fetchColumn();
+                    } catch (Exception $e) { $toggle = 0; }
+                    if ($toggle) : ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?php echo BASE_URL; ?>/views/supplies/scan.php">
+                            <i class="fas fa-barcode me-1"></i> Scanner CB
+                        </a>
+                    </li>
+                    <?php endif; ?>
+                    <?php
+                    // Vérifier si les approbations sont activées
+                    try {
+                        $db = getDbConnection();
+                        $stmt = $db->prepare("SELECT value FROM FEATURE_TOGGLES WHERE feature_key = 'enable_approvals' LIMIT 1");
+                        $stmt->execute();
+                        $approvals_enabled = $stmt->fetchColumn();
+                    } catch (Exception $e) { 
+                        $approvals_enabled = false;
+                    }
+                    if ($approvals_enabled && in_array($_SESSION['user_role'], ['UTILISATEUR', 'ADMIN'])) : ?>
                     <li class="nav-item">
                         <a class="nav-link" href="<?php echo BASE_URL; ?>/views/users/approbations.php">
                             <i class="fas fa-clipboard-check me-1"></i> Approbations
                         </a>
                     </li>
+                    <?php endif; ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="stockDropdown" role="button" data-bs-toggle="dropdown">
                             <i class="fas fa-boxes me-1"></i> Stock
@@ -255,7 +392,10 @@ if ($_SESSION['user_role'] === 'VISITEUR') {
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="<?php echo BASE_URL; ?>/views/users/list.php">Utilisateurs</a></li>
                             <li><a class="dropdown-item" href="<?php echo BASE_URL; ?>/views/users/add.php">Ajouter un utilisateur</a></li>
+                            <li><a class="dropdown-item" href="<?php echo BASE_URL; ?>/views/admin/settings.php"><i class="fas fa-toggle-on me-1"></i> Paramètres</a></li>
                             <li><a class="dropdown-item" target="_blank" href="<?php echo BASE_URL; ?>/test">Console SQL</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="<?php echo BASE_URL; ?>/views/supplies/bulk_select.php"><i class="fas fa-barcode me-1"></i> Générer codes-barres en lot</a></li>
                         </ul>
                     </li>
                     <?php endif; ?>
@@ -265,7 +405,7 @@ if ($_SESSION['user_role'] === 'VISITEUR') {
                 <!-- Menu utilisateur -->
                 <ul class="navbar-nav ms-auto">
                     <!-- Toggle dark mode -->
-                    <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'ADMIN'): ?>
+                    <?php if ($dark_mode_enabled): ?>
                     <li class="nav-item me-3 d-flex align-items-center dark-mode-toggle">
                         <i class="fas fa-moon text-light"></i>
                         <div class="form-check form-switch">
@@ -290,11 +430,37 @@ if ($_SESSION['user_role'] === 'VISITEUR') {
         </div>
     </nav>
 
-    <!-- Initialisation du système de notifications -->
+    <!-- Initialisation du système de notifications et dark mode -->
     <script>
         // Initialiser le système de notifications
         const notifications = new NotificationSystem({
             position: 'top-right',
             duration: 5000
         });
-    </script
+
+        <?php if ($dark_mode_enabled): ?>
+        // Dark mode toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const body = document.body;
+            
+            // Vérifier la préférence sauvegardée
+            const darkMode = localStorage.getItem('darkMode') === 'enabled';
+            if (darkMode) {
+                body.classList.add('dark-mode');
+                darkModeToggle.checked = true;
+            }
+
+            // Gérer le changement de mode
+            darkModeToggle.addEventListener('change', function() {
+                if (this.checked) {
+                    body.classList.add('dark-mode');
+                    localStorage.setItem('darkMode', 'enabled');
+                } else {
+                    body.classList.remove('dark-mode');
+                    localStorage.setItem('darkMode', 'disabled');
+                }
+            });
+        });
+        <?php endif; ?>
+    </script>

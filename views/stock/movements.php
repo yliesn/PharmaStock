@@ -14,7 +14,10 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 }
 
 // Définir ROOT_PATH pour le header
-define('ROOT_PATH', dirname(dirname(__DIR__)));
+if (!defined('ROOT_PATH')) {
+    // Définir ROOT_PATH pour le header
+    define('ROOT_PATH', dirname(dirname(__DIR__)));
+}
 
 // Initialiser les paramètres de filtrage
 $supply_id = isset($_GET['supply_id']) && is_numeric($_GET['supply_id']) ? (int)$_GET['supply_id'] : null;

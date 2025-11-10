@@ -15,7 +15,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 try {
     $db = getDbConnection();
     $stmt = $db->query("
-        SELECT id, reference, designation, description, quantite_stock, seuil_alerte
+        SELECT id, reference, designation, description, quantite_stock, seuil_alerte, commande_en_cours
         FROM FOURNITURE
         WHERE seuil_alerte IS NOT NULL
         AND quantite_stock <= seuil_alerte
@@ -75,7 +75,9 @@ try {
 // Définir le titre de la page
 $page_title = "Tableau de bord";
 // Définir ROOT_PATH pour le header
-define('ROOT_PATH', dirname(__FILE__));
+if (!defined('ROOT_PATH')) {
+    define('ROOT_PATH', dirname(__FILE__));
+}
 // Inclure l'en-tête
 include_once 'includes/header.php';
 ?>
@@ -90,39 +92,6 @@ include_once 'includes/header.php';
     </div> 
     <!-- Cartes de statistiques -->
     <div class="row mb-4">
-        <!-- Carte Approbations -->
-        <!-- <div class="col-xl-3 col-md-6 mb-4">
-            <a href="<?php echo BASE_URL; ?>/views/users/approbations.php" class="text-decoration-none position-relative">
-                <div class="card border-left-primary shadow h-100 py-2 hover-effect">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                    Approbations à traiter</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                    <span id="approbations-count">...</span>
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-clipboard-check fa-2x text-gray-300"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            fetch('<?php echo BASE_URL; ?>/api/approbations_count.php')
-                .then(r => r.json())
-                .then(data => {
-                    document.getElementById('approbations-count').textContent = data.count;
-                })
-                .catch(() => {
-                    document.getElementById('approbations-count').textContent = '?';
-                });
-        });
-        </script> -->
         <!-- Carte des fournitures totales -->
         <div class="col-xl-3 col-md-6 mb-4">
             <a href="<?php echo BASE_URL; ?>/views/supplies/list.php" class="text-decoration-none">
@@ -182,7 +151,51 @@ include_once 'includes/header.php';
                 </div>
             </a>
         </div>
-
+        <!-- Carte Approbations -->
+        <?php
+        // Vérifier si les approbations sont activées
+        try {
+            $db = getDbConnection();
+            $stmt = $db->prepare("SELECT value FROM FEATURE_TOGGLES WHERE feature_key = 'enable_approvals' LIMIT 1");
+            $stmt->execute();
+            $approvals_enabled = $stmt->fetchColumn();
+        } catch (Exception $e) { 
+            $approvals_enabled = false;
+        }
+        if ($approvals_enabled && in_array($_SESSION['user_role'], ['UTILISATEUR', 'ADMIN'])) : ?>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <a href="<?php echo BASE_URL; ?>/views/users/approbations.php" class="text-decoration-none position-relative">
+                <div class="card border-left-primary shadow h-100 py-2 hover-effect">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Approbations à traiter</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    <span id="approbations-count">...</span>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-clipboard-check fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('<?php echo BASE_URL; ?>/api/approbations_count.php')
+                .then(r => r.json())
+                .then(data => {
+                    document.getElementById('approbations-count').textContent = data.count;
+                })
+                .catch(() => {
+                    document.getElementById('approbations-count').textContent = '?';
+                });
+        });
+        </script>
+        <?php else : ?>
         <!-- Carte des commandes en cours -->
         <div class="col-xl-3 col-md-6 mb-4">
             <a href="<?php echo BASE_URL; ?>/views/supplies/list.php?filter=ordered" class="text-decoration-none">
@@ -202,6 +215,8 @@ include_once 'includes/header.php';
                 </div>
             </a>
         </div>
+        <?php endif; ?>
+
     </div>
     
     

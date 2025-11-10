@@ -11,6 +11,11 @@ Ce projet est une application web de gestion de stock initialement conçue pour 
   - Historique complet des mouvements (qui, quoi, quand, pourquoi)
   - Exportation des mouvements de stock (CSV, Excel, etc.)
   - Alertes sur les seuils bas de stock
+- **Gestion des codes-barres**
+  - Génération automatique d'un code-barres pour chaque fourniture (affichage sur la fiche)
+  - Téléchargement du code-barres au format SVG
+  - Impression en lot de codes-barres pour plusieurs fournitures (sélection et génération groupée, réservé aux administrateurs)
+  - Scan de code-barres pour retrouver rapidement une fiche fourniture
 - **Gestion des approvisionnements**
   - Ajout, édition et suppression de fournitures
   - Import/export de la liste des fournitures
@@ -46,7 +51,6 @@ Ce projet est une application web de gestion de stock initialement conçue pour 
 - `includes/` : Fichiers inclus (header, footer, navigation, fonctions)
 - `models/` : Modèles PHP (Stock, Approvisionnement, Utilisateur)
 - `style/` : Feuilles de style CSS
-- `test/` : Scripts de test et de développement
 - `views/` : Vues PHP pour l'affichage (stock, approvisionnements, utilisateurs, visiteur)
 
 ## Installation détaillée

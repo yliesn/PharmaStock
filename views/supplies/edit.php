@@ -14,7 +14,10 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 }
 
 // Définir ROOT_PATH pour le header
-define('ROOT_PATH', dirname(dirname(__DIR__)));
+if (!defined('ROOT_PATH')) {
+    // Définir ROOT_PATH pour le header
+    define('ROOT_PATH', dirname(dirname(__DIR__)));
+}
 
 // Vérifier si l'ID de la fourniture est fourni
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
