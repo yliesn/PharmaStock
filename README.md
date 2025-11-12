@@ -87,27 +87,68 @@ Les sauvegardes de la base de données sont stockées dans le dossier `backup/` 
 
 - Nejara Ylies
 
+## Fonctionnalités implémentées et testées
+
+- ✅ Authentification et sécurité (login, logout, gestion des sessions)
+- ✅ Gestion des codes-barres (génération SVG, scan, impression en lot)
+- ✅ Gestion des fournitures (ajout, modification, suppression, import/export CSV)
+- ✅ Mouvements de stock (entrées, sorties, historique)
+- ✅ Gestion des utilisateurs (création, édition, suppression, rôles)
+- ✅ Système d'approbation (demandes, validation, notifications)
+- ✅ Sauvegarde et restauration de base de données
+- ✅ Notifications internes
+- ✅ Validation des données et gestion des erreurs
+- ✅ Structure HTML W3C conforme
+- ✅ Compatibilité PostgreSQL (migration depuis MariaDB)
+- ✅ Système de gestion des inventaires physiques (création, comparaison, correction de stock)
+- ✅ Export CSV des fournitures et mouvements de stock
+- ✅ Tableau de bord avec statistiques (fournitures en stock, sorties du jour, fournitures en commande)
+
 ## Fonctionnalités à venir
 
-- Génération automatique de rapports PDF
-- Statistiques avancées sur les mouvements et consommations
+### Rapports et statistiques
+- Génération automatique de rapports PDF (mouvements, stocks, consommations)
+- Statistiques avancées sur les mouvements et consommations (tendances, graphiques)
+- Tableau de bord personnalisable avec widgets
+- Export statistiques en PDF/Excel
+
+### Gestion avancée
 - Gestion multi-dépôts (plusieurs lieux de stockage)
-- Système de notifications par email/SMS
-- Interface mobile responsive améliorée
-- Journal d’audit détaillé (logs d’actions)
-- Intégration possible avec d’autres systèmes (API)
 - Système de gestion des inventaires physiques
 - Gestion des alertes personnalisées (par type de produit, par utilisateur)
-- Tableau de bord personnalisable
-- Exportation/importation avancée (formats multiples, automatisation)
-- Historique complet des modifications (traçabilité)
-- Gestion des accès par groupes d’utilisateurs
-- Archivage automatique des mouvements anciens
-- Prise en charge du multilingue (internationalisation)
-- Génération de QR codes ou codes-barres pour les fournitures
-- Système de recherche avancée et filtres dynamiques
 - Prise en charge des unités multiples (ex : boîtes, pièces, litres)
 - Planification automatique des commandes selon seuils
-- Support pour API mobile dédiée
 
-N’hésitez pas à proposer d’autres idées ou à contribuer !
+### Communication et notifications
+- Système de notifications par email/SMS
+- Templates d'emails personnalisables
+- Notifications push intégrées
+- Historique complet des notifications
+
+### Audit et traçabilité
+- Journal d'audit détaillé (logs d'actions)
+- Historique complet des modifications (traçabilité)
+- Archivage automatique des mouvements anciens
+
+### Accessibilité et ergonomie
+- Interface mobile responsive améliorée
+- Prise en charge du multilingue (internationalisation)
+- Mode sombre (dark mode)
+- Amélioration de l'UX/UI
+
+### Recherche et filtrage
+- Système de recherche avancée et filtres dynamiques
+- Recherche full-text dans les mouvements et fournitures
+- Sauvegarde des filtres personnalisés
+
+### Contrôle d'accès
+- Gestion des accès par groupes d'utilisateurs
+- Permissions granulaires par module
+
+### Intégrations
+- Intégration possible avec d'autres systèmes (API)
+- Support pour API mobile dédiée
+- Webhooks pour événements importants
+- Synchronisation avec systèmes externes
+
+N'hésitez pas à proposer d'autres idées ou à contribuer !
