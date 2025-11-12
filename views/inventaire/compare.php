@@ -39,6 +39,9 @@ try {
 <div class="container py-4">
     <h1 class="mb-3 text-center">Inventaire du <?= htmlspecialchars(date('d/m/Y H:i', strtotime($inventaire['date_inventaire']))) ?></h1>
     <p class="text-center mb-2">Effectué par : <strong><?= htmlspecialchars($inventaire['prenom'] . ' ' . $inventaire['nom']) ?></strong></p>
+    <!-- Correction inventaire -->
+    <button type="button" class="center mb-2 btn btn-success sub-btn">Correction </button>
+
     <?php if (!empty($inventaire['commentaire'])): ?>
         <div class="alert alert-info mx-auto mb-4" style="max-width:600px;">
             <strong>Commentaire :</strong> <?= nl2br(htmlspecialchars($inventaire['commentaire'])) ?>
@@ -80,6 +83,13 @@ try {
     <div class="text-center mt-4">
         <a href="create.php" class="btn btn-outline-primary">&#8592; Faire un nouvel inventaire</a>
     </div>
+    <script>
+    document.querySelector('.sub-btn').addEventListener('click', function() {
+        if (confirm('Êtes-vous sûr de vouloir corriger le stock en fonction de cet inventaire ? Cette action est irréversible.')) {
+            window.location.href = 'corriger_stock.php?id=<?= $id ?>';
+        }
+    });
+    </script>
 </div>
 <?php include '../../includes/footer.php'; ?>
 

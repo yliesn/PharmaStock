@@ -38,12 +38,12 @@ try {
         $qte_physique = (int)$ligne['quantite_physique'];
         if ($qte_physique === -1 || $qte_physique === $qte_theorique) continue; // pas de correction
         $ecart = $qte_physique - $qte_theorique;
-        $type = $ecart > 0 ? 'entree' : 'sortie';
+        $type = $ecart > 0 ? 'ENTREE' : 'SORTIE';
         $quantite = abs($ecart);
         // Enregistrer le mouvement
-        $stmtMv = $db->prepare("INSERT INTO MOUVEMENT (date_mouvement, fourniture_id, type, quantite, utilisateur_id, commentaire) VALUES (NOW(), ?, ?, ?, ?, ?)");
+        $stmtMv = $db->prepare("INSERT INTO MOUVEMENT_STOCK (date_mouvement, date_creation, id_fourniture, type, quantite, id_utilisateur, motif) VALUES (NOW(), NOW(), ?, ?, ?, ?, ?)");
         $commentaire = 'Correction inventaire #'.$id;
-        $stmtMv->execute([$fourniture_id, $type, $quantite, $utilisateur_id, $commentaire]);
+        $stmtMv->execute([$fourniture_id, $type, $quantite, $utilisateur_id, 'inventaire #'.$id]);
         $nb_mouvements++;
     }
     $db->commit();
