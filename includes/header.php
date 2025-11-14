@@ -218,7 +218,7 @@ if ($_SESSION['user_role'] === 'VISITEUR') {
          * Étiquettes et indicateurs
          */
         body.dark-mode .badge.bg-warning.text-dark {
-            color: #ffc107 !important;
+            color: #000000ff !important;
         }
         
         /**
