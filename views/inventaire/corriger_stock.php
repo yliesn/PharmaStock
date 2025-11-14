@@ -25,6 +25,9 @@ try {
     $stmt->execute([$id]);
     $inventaire = $stmt->fetch();
     if (!$inventaire) throw new Exception('Inventaire non trouvé.');
+    if ($inventaire['corrigee'] == 1) {
+        throw new Exception('Cet inventaire a déjà été corrigé.');
+    }
     // Récupérer les lignes d'inventaire
     $stmt = $db->prepare("SELECT * FROM INVENTAIRE_LIGNE WHERE inventaire_id = ?");
     $stmt->execute([$id]);
@@ -46,6 +49,9 @@ try {
         $stmtMv->execute([$fourniture_id, $type, $quantite, $utilisateur_id, 'inventaire #'.$id]);
         $nb_mouvements++;
     }
+    // Marquer l'inventaire comme corrigé
+    $stmtUp = $db->prepare("UPDATE INVENTAIRE SET corrigee = 1 WHERE id = ?");
+    $stmtUp->execute([$id]);
     $db->commit();
     echo '<div style="margin:2em auto;max-width:500px;text-align:center">';
     echo '<h2>Correction terminée</h2>';
@@ -54,5 +60,10 @@ try {
     echo '</div>';
 } catch (Exception $e) {
     if ($db && $db->inTransaction()) $db->rollBack();
-    echo '<div style="color:red;text-align:center;margin-top:2em">Erreur : '.htmlspecialchars($e->getMessage()).'</div>';
+    // echo '<div style="color:red;text-align:center;margin-top:2em">Erreur : '.htmlspecialchars($e->getMessage()).'</div>';
+    echo '<div style="margin:2em auto;max-width:500px;text-align:center">';
+    echo '<h2>Erreur lors de la correction</h2>';
+    echo '<p style="color:red;">'.htmlspecialchars($e->getMessage()).'</p>';
+    echo '<a href="/views/inventaire/compare.php?id='.$id.'">Retour à l\'inventaire</a>';
+    echo '</div>';
 }
