@@ -32,6 +32,9 @@ if ($_SESSION['user_role'] === 'VISITEUR') {
     $_SESSION['error_message'] = "Espace réservé aux visiteurs.";
     redirect('views/visiteur/index.php');
 }
+
+// Utiliser la fonction pour récupérer le nom de l'application
+$appName = getAppConfig('appName') ?? 'Nom par défaut';
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -44,7 +47,7 @@ if ($_SESSION['user_role'] === 'VISITEUR') {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Système de notifications -->
     <script src="<?php echo BASE_URL; ?>/assets/js/notifications.js"></script>
-    <title><?php echo isset($page_title) ? htmlspecialchars($page_title) . ' - ' : ''; ?>PharmaStock</title>
+    <title><?php echo isset($page_title) ? htmlspecialchars($page_title) . ' - ' : ''; echo $appName?></title>
     
     <!-- Styles pour le mode sombre -->
     <style>
@@ -299,7 +302,7 @@ if ($_SESSION['user_role'] === 'VISITEUR') {
         <div class="container">
             <a class="navbar-brand" href="<?php echo BASE_URL; ?>/dashboard.php">
                 <i class="fas fa-pills me-2"></i>
-                PharmaStock
+                <?php echo $appName; ?>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>

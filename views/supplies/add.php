@@ -6,6 +6,9 @@
 
 // Inclure le fichier de configuration
 require_once '../../config/config.php';
+require_once '../../includes/functions.php';
+
+$referencePrefix = getAppConfig('referencePrefix') ?? 'PH';
 
 // Vérifier si l'utilisateur est connecté
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
@@ -92,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                     
                     // Format PH001, PH002, etc.
-                    $reference = 'PH' . str_pad($next_id, 3, '0', STR_PAD_LEFT);
+                    $reference = $referencePrefix . str_pad($next_id, 3, '0', STR_PAD_LEFT);
                 }
                 
                 // Insérer la nouvelle fourniture
@@ -191,7 +194,7 @@ include_once ROOT_PATH . '/includes/header.php';
                                         <?php echo $reference === 'Auto-généré' ? 'Personnaliser' : 'Auto-générer'; ?>
                                     </button>
                                 </div>
-                                <div class="form-text">Code unique identifiant la fourniture. Par défaut: PH + numéro automatique.</div>
+                                <div class="form-text">Code unique identifiant la fourniture. Par défaut: <?php echo $referencePrefix; ?> + numéro automatique.</div>
                             </div>
                             <div class="col-md-8">
                                 <label for="designation" class="form-label">Désignation <span class="text-danger">*</span></label>

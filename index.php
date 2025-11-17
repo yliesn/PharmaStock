@@ -6,6 +6,7 @@
 
 // Inclure le fichier de configuration
 require_once 'config/config.php';
+require_once 'includes/functions.php';
 
 // Générer un token CSRF pour la sécurité du formulaire
 $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
@@ -26,6 +27,7 @@ if (isset($_SESSION['error_message'])) {
     $error_message = $_SESSION['error_message'];
     unset($_SESSION['error_message']); // Effacer le message après utilisation
 }
+$logopath = getAppConfig('logoPath') ?? 'assets/img/logo2.png';
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -99,8 +101,8 @@ if (isset($_SESSION['error_message'])) {
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#198754">
     <!-- Icône pour l'écran d'accueil -->
-    <link rel="icon" type="image/png" sizes="192x192" href="assets/img/logo2.png">
-    <link rel="apple-touch-icon" href="assets/img/logo2.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="<?php echo $logopath; ?>">
+    <link rel="apple-touch-icon" href="<?php echo $logopath; ?>">
     <script>
       // Enregistrement du service worker
       if ('serviceWorker' in navigator) {
@@ -125,7 +127,7 @@ if (isset($_SESSION['error_message'])) {
         <!-- Logo -->
         <div class="logo-container">
           <!--  <i class="fas fa-house-medical text-success " style="font-size: 5rem" ></i> -->
-             <img src="assets/img/logo2.png" alt="Logo Pharmacie" class="logo">
+             <img src="<?php echo $logopath; ?>" alt="Logo Pharmacie" class="logo">
         </div>
         
         <!-- Titre -->

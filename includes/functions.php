@@ -17,3 +17,25 @@ function isFeatureEnabled($featureKey) {
         return false;
     }
 }
+
+// Fonction pour lire le fichier JSON de configuration
+function getAppConfig($key = null) {
+    $configPath = __DIR__ . '/../config/app_config.json';
+
+    if (!file_exists($configPath)) {
+        throw new Exception("Le fichier de configuration n'existe pas : " . $configPath);
+    }
+
+    $configContent = file_get_contents($configPath);
+    $config = json_decode($configContent, true);
+
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        throw new Exception("Erreur lors du décodage du fichier JSON : " . json_last_error_msg());
+    }
+
+    if ($key !== null) {
+        return $config[$key] ?? null;
+    }
+
+    return $config;
+}

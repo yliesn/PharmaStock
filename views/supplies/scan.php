@@ -2,6 +2,9 @@
 // Page de scan de code-barres pour les fournitures
 require_once '../../config/config.php';
 require_once '../../includes/functions.php';
+
+$referencePrefix = getAppConfig('referencePrefix') ?? 'PH';
+
 // Vérifier si l'utilisateur est connecté
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     redirect('index.php');
@@ -70,7 +73,9 @@ window.addEventListener('DOMContentLoaded', function() {
         var code = data.codeResult.code;
         // Extraction de l'ID après 'PH', suppression des zéros initiaux
         var id = null;
+        // TODO : utiliser la variable PHP $referencePrefix ici
         var match = code.match(/PH(\d+)/i);
+        // var match = code.match(new RegExp($referencePrefix + "(\\d+)", "i"));
         if (match) {
             id = match[1].replace(/^0+/, '');
         }

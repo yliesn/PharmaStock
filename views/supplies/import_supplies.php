@@ -7,6 +7,9 @@
 
 // Inclure le fichier de configuration
 require_once '../../config/config.php';
+require_once '../../includes/functions.php';
+
+$referencePrefix = getAppConfig('referencePrefix') ?? 'PH';
 
 
 // Vérifier si l'utilisateur est connecté
@@ -151,7 +154,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['csv_file'])) {
                         }
                         
                         // Auto-générer la référence pour toutes les lignes
-                        $reference = 'PH' . str_pad($next_id, 3, '0', STR_PAD_LEFT);
+                        $reference = $referencePrefix . str_pad($next_id, 3, '0', STR_PAD_LEFT);
                         $next_id++;
                         
                         // Insérer la fourniture
