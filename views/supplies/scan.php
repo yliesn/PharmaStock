@@ -1,17 +1,18 @@
 <?php
 // Page de scan de code-barres pour les fournitures
 require_once '../../config/config.php';
-
+require_once '../../includes/functions.php';
 // Vérifier si l'utilisateur est connecté
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     redirect('index.php');
 }
 // Vérifier si la fonctionnalité scanner est activée
 try {
-    $db = getDbConnection();
-    $stmt = $db->prepare("SELECT value FROM FEATURE_TOGGLES WHERE feature_key = 'enable_barcode_scanner' LIMIT 1");
-    $stmt->execute();
-    $toggle = $stmt->fetchColumn();
+    // $db = getDbConnection();
+    // $stmt = $db->prepare("SELECT value FROM FEATURE_TOGGLES WHERE feature_key = 'enable_barcode_scanner' LIMIT 1");
+    // $stmt->execute();
+    // $toggle = $stmt->fetchColumn();
+    $toggle = isFeatureEnabled('enable_barcode_scanner');
 } catch (Exception $e) { $toggle = 0; }
 if (!$toggle) {
     $_SESSION['error_message'] = "La fonctionnalité scanner est désactivée.";

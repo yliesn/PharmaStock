@@ -1,6 +1,7 @@
 <?php
 // Page d'accueil améliorée pour les utilisateurs avec le rôle VISITEUR
 require_once '../../config/config.php';
+require_once '../../includes/functions.php';
 
 // Vérifier si l'utilisateur est bien connecté et a le rôle VISITEUR
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true || $_SESSION['user_role'] !== 'VISITEUR') {
@@ -28,13 +29,19 @@ try {
 }
 
 // Vérifier si les approbations sont activées (renvoyera '1' ou '0')
-try {
-    $stmt = $db->prepare("SELECT value FROM FEATURE_TOGGLES WHERE feature_key = 'enable_approvals' LIMIT 1");
-    $stmt->execute();
-    $approvals_enabled = (bool) $stmt->fetchColumn();
-} catch (Exception $e) {
-    $approvals_enabled = false;
+// try {
+//     $stmt = $db->prepare("SELECT value FROM FEATURE_TOGGLES WHERE feature_key = 'enable_approvals' LIMIT 1");
+//     $stmt->execute();
+//     $approvals_enabled = (bool) $stmt->fetchColumn();
+// } catch (Exception $e) {
+//     $approvals_enabled = false;
+// }
+$approvals_enabled = isFeatureEnabled('enable_approvals');
+if(!$approvals_enabled){
+    $error_message = "Le système d'approbations est désactivé.";
+    header('Location: ' . BASE_URL . '/auth/logout.php');
 }
+
 ?>
 
 <!DOCTYPE html>

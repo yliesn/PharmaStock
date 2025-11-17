@@ -154,14 +154,7 @@ include_once 'includes/header.php';
         <!-- Carte Approbations -->
         <?php
         // Vérifier si les approbations sont activées
-        try {
-            $db = getDbConnection();
-            $stmt = $db->prepare("SELECT value FROM FEATURE_TOGGLES WHERE feature_key = 'enable_approvals' LIMIT 1");
-            $stmt->execute();
-            $approvals_enabled = $stmt->fetchColumn();
-        } catch (Exception $e) { 
-            $approvals_enabled = false;
-        }
+        $approvals_enabled = isFeatureEnabled('enable_approvals');
         if ($approvals_enabled && in_array($_SESSION['user_role'], ['UTILISATEUR', 'ADMIN'])) : ?>
         <div class="col-xl-3 col-md-6 mb-4">
             <a href="<?php echo BASE_URL; ?>/views/users/approbations.php" class="text-decoration-none position-relative">

@@ -3,6 +3,7 @@
  * En-tête commun de l'application
  * Contient la barre de navigation principale
  */
+require_once __DIR__ . '/functions.php';
 
 // Vérification de sécurité pour éviter l'accès direct au fichier
 if (!defined('ROOT_PATH')) {
@@ -16,24 +17,11 @@ $prenom = isset($_SESSION['user_prenom']) ? htmlspecialchars($_SESSION['user_pre
 $role = isset($_SESSION['user_role']) ? htmlspecialchars($_SESSION['user_role']) : '';
 
 // Vérifier si le mode sombre est activé dans les paramètres
-try {
-    $db = getDbConnection();
-    $stmt = $db->prepare("SELECT value FROM FEATURE_TOGGLES WHERE feature_key = 'enable_dark_mode' LIMIT 1");
-    $stmt->execute();
-    $dark_mode_enabled = $stmt->fetchColumn();
-} catch (Exception $e) { 
-    $dark_mode_enabled = false;
-}
 
-try {
-    $db = getDbConnection();
-    $stmt = $db->prepare("SELECT value FROM FEATURE_TOGGLES WHERE feature_key = 'enable_inventory' LIMIT 1");
-    $stmt->execute();
-    $inventory_enabled = $stmt->fetchColumn();
-} catch (Exception $e) { 
-    $inventory_enabled = false;
-}
+$dark_mode_enabled = isFeatureEnabled('enable_dark_mode');
 
+// Vérifier si la fonctionnalité d'inventaire est activée
+$inventory_enabled = isFeatureEnabled('enable_inventory');
 
 // Vérifier si l'utilisateur a les droits d'accès
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
@@ -326,13 +314,8 @@ if ($_SESSION['user_role'] === 'VISITEUR') {
                     </li>
                     <?php
                     // Afficher le lien Scanner CB seulement si le toggle est activé
-                    try {
-                        $db = getDbConnection();
-                        $stmt = $db->prepare("SELECT value FROM FEATURE_TOGGLES WHERE feature_key = 'enable_barcode_scanner' LIMIT 1");
-                        $stmt->execute();
-                        $toggle = $stmt->fetchColumn();
-                    } catch (Exception $e) { $toggle = 0; }
-                    if ($toggle) : ?>
+                    $CB_toggle = isFeatureEnabled('enable_barcode_scanner');
+                    if ($CB_toggle) : ?>
                     <li class="nav-item">
                         <a class="nav-link" href="<?php echo BASE_URL; ?>/views/supplies/scan.php">
                             <i class="fas fa-barcode me-1"></i> Scanner CB
@@ -341,14 +324,7 @@ if ($_SESSION['user_role'] === 'VISITEUR') {
                     <?php endif; ?>
                     <?php
                     // Vérifier si les approbations sont activées
-                    try {
-                        $db = getDbConnection();
-                        $stmt = $db->prepare("SELECT value FROM FEATURE_TOGGLES WHERE feature_key = 'enable_approvals' LIMIT 1");
-                        $stmt->execute();
-                        $approvals_enabled = $stmt->fetchColumn();
-                    } catch (Exception $e) { 
-                        $approvals_enabled = false;
-                    }
+                    $approvals_enabled = isFeatureEnabled('enable_approvals');
                     if ($approvals_enabled && in_array($_SESSION['user_role'], ['UTILISATEUR', 'ADMIN'])) : ?>
                     <li class="nav-item">
                         <a class="nav-link" href="<?php echo BASE_URL; ?>/views/users/approbations.php">
@@ -388,15 +364,6 @@ if ($_SESSION['user_role'] === 'VISITEUR') {
                     </li>
                     <?php endif; ?>
                     <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'ADMIN'): ?>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="movementsDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="fa-solid fa-code me-1"></i> Developpement
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="<?php echo BASE_URL; ?>/views/supplies/import_supplies.php">import TEST</a></li>
-                        </ul>
-                        
-                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown">
                             <i class="fas fa-cog me-1"></i> Administration

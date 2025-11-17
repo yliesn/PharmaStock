@@ -1,16 +1,18 @@
 <?php
 // Script pour traiter une demande d'approbation (approuver ou refuser)
 require_once '../config/config.php';
+require_once '../includes/functions.php';
 
 // Vérifier si les approbations sont activées
-try {
-    $db = getDbConnection();
-    $stmt = $db->prepare("SELECT value FROM FEATURE_TOGGLES WHERE feature_key = 'enable_approvals' LIMIT 1");
-    $stmt->execute();
-    $approvals_enabled = $stmt->fetchColumn();
-} catch (Exception $e) { 
-    $approvals_enabled = false;
-}
+// try {
+//     $db = getDbConnection();
+//     $stmt = $db->prepare("SELECT value FROM FEATURE_TOGGLES WHERE feature_key = 'enable_approvals' LIMIT 1");
+//     $stmt->execute();
+//     $approvals_enabled = $stmt->fetchColumn();
+// } catch (Exception $e) { 
+//     $approvals_enabled = false;
+// }
+$approvals_enabled = isFeatureEnabled('enable_approvals');
 
 if (!$approvals_enabled) {
     header('Location: ' . BASE_URL . '/views/users/approbations.php?error=2');

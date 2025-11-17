@@ -6,7 +6,7 @@
 
 // Inclure le fichier de configuration
 require_once '../../config/config.php';
-
+require_once '../../includes/functions.php';
 // Vérifier si l'utilisateur est connecté
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     // Rediriger vers la page de connexion
@@ -14,14 +14,15 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 }
 
 // Vérifier si le scanner est activé dans les paramètres
-try {
-    $db = getDbConnection();
-    $stmt = $db->prepare("SELECT value FROM FEATURE_TOGGLES WHERE feature_key = 'enable_barcode_scanner' LIMIT 1");
-    $stmt->execute();
-    $scanner_enabled = $stmt->fetchColumn();
-} catch (Exception $e) { 
-    $scanner_enabled = false; 
-}
+// try {
+//     $db = getDbConnection();
+//     $stmt = $db->prepare("SELECT value FROM FEATURE_TOGGLES WHERE feature_key = 'enable_barcode_scanner' LIMIT 1");
+//     $stmt->execute();
+//     $scanner_enabled = $stmt->fetchColumn();
+// } catch (Exception $e) { 
+//     $scanner_enabled = false; 
+// }
+$scanner_enabled = isFeatureEnabled('enable_barcode_scanner');
 
     // Définir ROOT_PATH pour le header
 if (!defined('ROOT_PATH')) {
