@@ -73,9 +73,7 @@ window.addEventListener('DOMContentLoaded', function() {
         var code = data.codeResult.code;
         // Extraction de l'ID après 'PH', suppression des zéros initiaux
         var id = null;
-        // TODO : utiliser la variable PHP $referencePrefix ici
-        var match = code.match(/PH(\d+)/i);
-        // var match = code.match(new RegExp($referencePrefix + "(\\d+)", "i"));
+        var match = code.match(/<?php echo $referencePrefix ?>(\d+)/i);
         if (match) {
             id = match[1].replace(/^0+/, '');
         }
