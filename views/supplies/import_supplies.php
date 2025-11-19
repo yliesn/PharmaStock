@@ -87,8 +87,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['csv_file'])) {
                     //         $headers_map['quantite_stock'] = $index;
                     //     } elseif ($clean_header === 'seuil_alerte' || $clean_header === 'seuil' || $clean_header === 'alerte') {
                     //         $headers_map['seuil_alerte'] = $index;
-                    //     } elseif ($clean_header === 'description') {
-                    //         $headers_map['description'] = $index;
+                    //     } elseif ($clean_header === 'conditionnement') {
+                    //         $headers_map['conditionnement'] = $index;
                     //     }
                     //     // Nous ignorons intentionnellement la colonne 'reference'
                     // }
@@ -97,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['csv_file'])) {
                     $headers_map['designation'] = 0;
                     $headers_map['quantite_stock'] =1;
                     $headers_map['seuil_alerte'] = 2;
-                    $headers_map['description'] = 3;
+                    $headers_map['conditionnement'] = 3;
 
 
 
@@ -115,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['csv_file'])) {
                     
                     // Lire et traiter les données ligne par ligne
                     $line_number = 1;
-                    $stmt_insert = $db->prepare("INSERT INTO FOURNITURE (reference, designation, description, quantite_stock, seuil_alerte) VALUES (?, ?, ?, 0, ?)");
+                    $stmt_insert = $db->prepare("INSERT INTO FOURNITURE (reference, designation, conditionnement, quantite_stock, seuil_alerte) VALUES (?, ?, ?, 0, ?)");
                     
                     while (($data = fgetcsv($handle, 1000, ';')) !== false) {
                         $line_number++;
@@ -130,8 +130,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['csv_file'])) {
                         // Extraire les données selon le mapping des en-têtes
                         $designation = isset($data[$headers_map['designation']]) ? 
                                       trim($data[$headers_map['designation']]) : '';
-                        $description = isset($headers_map['description']) && isset($data[$headers_map['description']]) ? 
-                                      trim($data[$headers_map['description']]) : '';
+                        $conditionnement = isset($headers_map['conditionnement']) && isset($data[$headers_map['conditionnement']]) ? 
+                                      trim($data[$headers_map['conditionnement']]) : '';
                         $quantite_stock = isset($data[$headers_map['quantite_stock']]) ? 
                                         (int)$data[$headers_map['quantite_stock']] : 0;
                         $seuil_alerte = isset($data[$headers_map['seuil_alerte']]) && $data[$headers_map['seuil_alerte']] !== '' ? (int)$data[$headers_map['seuil_alerte']] : null;
@@ -158,7 +158,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['csv_file'])) {
                         $next_id++;
                         
                         // Insérer la fourniture
-                        $stmt_insert->execute([$reference, $designation, $description, $seuil_alerte]);
+                        $stmt_insert->execute([$reference, $designation, $conditionnement, $seuil_alerte]);
                         $imported_count++;
                         
                         // Si une quantité initiale est spécifiée, créer un mouvement d'entrée
@@ -235,7 +235,7 @@ include_once ROOT_PATH . '/includes/header.php';
                             <li><strong>designation</strong> : Nom de la fourniture (obligatoire)</li>
                             <li><strong>quantite_stock</strong> : Quantité initiale (défaut: 0)</li>
                             <li><strong>seuil_alerte</strong> : Seuil d'alerte (optionnel)</li>
-                            <li><strong>description</strong> : Description détaillée (optionnel)</li>
+                            <li><strong>conditionnement</strong> : Conditionnement (optionnel)</li>
                         </ul>
                         <p>Les références seront automatiquement générées au format PH001, PH002, etc.</p>
                         <p class="mb-0">Le fichier doit utiliser le point-virgule (;) comme séparateur et être encodé en UTF-8.</p>
@@ -245,7 +245,7 @@ include_once ROOT_PATH . '/includes/header.php';
                     <div class="mb-4">
                         <h6>Modèle de fichier CSV</h6>
                         <div class="bg-light p-3 rounded">
-                            <code>designation;quantite_stock;seuil_alerte;description<br>
+                            <code>designation;quantite_stock;seuil_alerte;conditionnement<br>
                             Stylo bleu;100;20;Stylo à bille de couleur bleue<br>
                             Ramette papier A4;50;10;Ramette de 500 feuilles<br>
                             Cahier grand format;75;15;</code>
@@ -304,7 +304,7 @@ include_once ROOT_PATH . '/includes/header.php';
 $page_specific_script = "
     // Fonction pour télécharger le modèle CSV
     function downloadTemplate() {
-        const csvContent = 'designation;quantite_stock;seuil_alerte;description\\nStylo bleu;100;20;Stylo à bille de couleur bleue\\nRamette papier A4;50;10;Ramette de 500 feuilles\\nCahier grand format;75;15;';
+        const csvContent = 'designation;quantite_stock;seuil_alerte;conditionnement\\nStylo bleu;100;20;Stylo à bille de couleur bleue\\nRamette papier A4;50;10;Ramette de 500 feuilles\\nCahier grand format;75;15;';
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement('a');
         const url = URL.createObjectURL(blob);

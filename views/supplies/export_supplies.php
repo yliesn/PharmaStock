@@ -18,12 +18,12 @@ $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $filter = isset($_GET['filter']) ? $_GET['filter'] : 'all';
 
 // Construction de la requête SQL de base
-$sql = "SELECT id, reference, designation, description, quantite_stock, seuil_alerte FROM FOURNITURE";
+$sql = "SELECT id, reference, designation, conditionnement, quantite_stock, seuil_alerte FROM FOURNITURE";
 $params = [];
 
 // Ajout des conditions de recherche et filtrage
 if (!empty($search)) {
-    $sql .= " WHERE (reference LIKE ? OR designation LIKE ? OR description LIKE ?)";
+    $sql .= " WHERE (reference LIKE ? OR designation LIKE ? OR conditionnement LIKE ?)";
     $searchTerm = "%$search%";
     $params = [$searchTerm, $searchTerm, $searchTerm];
     
@@ -90,7 +90,7 @@ try {
             $supply['id'],
             $supply['reference'],
             $supply['designation'],
-            $supply['description'],
+            $supply['conditionnement'],
             $supply['quantite_stock'],
             $supply['seuil_alerte'] ?: 'Non défini',
             $status

@@ -33,7 +33,7 @@ try {
     
     // Informations de base de la fourniture
     $stmt = $db->prepare("
-        SELECT id, reference, designation, description, quantite_stock, seuil_alerte
+        SELECT id, reference, designation, conditionnement, quantite_stock, seuil_alerte
         FROM FOURNITURE 
         WHERE id = ?
     ");
@@ -124,7 +124,7 @@ include_once ROOT_PATH . '/includes/header.php';
                     <div class="row mb-3">
                         <div class="col-md-4 fw-bold text-muted">Conditionnement:</div>
                         <div class="col-md-8">
-                            <?php echo !empty($supply['description']) ? nl2br(htmlspecialchars($supply['description'])) : '<em class="text-muted">Non renseignée</em>'; ?>
+                            <?php echo !empty($supply['conditionnement']) ? nl2br(htmlspecialchars($supply['conditionnement'])) : '<em class="text-muted">Non renseignée</em>'; ?>
                         </div>
                     </div>
                     <div class="row mb-3">

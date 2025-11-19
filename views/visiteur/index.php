@@ -18,7 +18,7 @@ $page_title = "Espace Visiteur";
 // Récupération des fournitures
 try {
     $db = getDbConnection();
-    $sql = "SELECT id, reference, designation, quantite_stock, seuil_alerte, description FROM FOURNITURE ORDER BY designation ASC";
+    $sql = "SELECT id, reference, designation, quantite_stock, seuil_alerte, conditionnement FROM FOURNITURE ORDER BY designation ASC";
     $stmt = $db->prepare($sql);
     $stmt->execute();
     $supplies = $stmt->fetchAll();
@@ -114,7 +114,7 @@ if(!$approvals_enabled){
                         <div class="card-body d-flex justify-content-between align-items-center">
                             <div>
                                 <div class="fw-bold" style="font-size:1.05rem;"><?= htmlspecialchars($supply['designation']) ?></div>
-                                <div class="small-muted"><?= htmlspecialchars($supply['description']) ?></div>
+                                <div class="small-muted"><?= htmlspecialchars($supply['conditionnement']) ?></div>
                             </div>
                             <div class="text-end">
                                 <div class="fw-bold" style="font-size:1.25rem;"><?= number_format($supply['quantite_stock'], 0, ',', ' ') ?></div>

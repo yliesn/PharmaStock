@@ -198,12 +198,16 @@ include_once ROOT_PATH . '/includes/header.php';
                                     <p class="mb-0">
                                         <strong>Référence:</strong> <?php echo htmlspecialchars($selected_supply['reference']); ?> | 
                                         <strong>Stock actuel:</strong> <?php echo number_format($selected_supply['quantite_stock'], 0, ',', ' '); ?> unité(s)
-                                        <?php if ($selected_supply['seuil_alerte'] && $selected_supply['quantite_stock'] <= $selected_supply['seuil_alerte']): ?>
+                                        <?php if ($selected_supply['seuil_alerte'] && $selected_supply['quantite_stock'] <= $selected_supply['seuil_alerte'] && $selected_supply['quantite_stock']>0): ?>
                                             <span class="badge bg-warning text-dark ms-2">Stock bas</span>
+                                        <?php endif; ?>
+                                        <?php if ($selected_supply['quantite_stock'] == 0): ?>
+                                            <span class="badge bg-danger ms-2">Rupture</span>
                                         <?php endif; ?>
                                         <?php if ($selected_supply['commande_en_cours']): ?>
                                             <span class="badge bg-success ms-2">Commande en cours</span>
                                         <?php endif; ?>
+
                                     </p>
                                 </div>
                                 <div class="col-md-3 text-md-end mt-2 mt-md-0">
@@ -235,7 +239,7 @@ include_once ROOT_PATH . '/includes/header.php';
                         
                         <!-- Réintégration de la liste déroulante pour la sélection manuelle -->
                         <div class="mb-3">
-                            <label for="supply_id" class="form-label">Fourniture <span class="text-danger">*</span></label>
+                            <label for="supply_id" id="supply_label" class="form-label">Fourniture <span class="text-danger">*</span></label>
                             <select class="form-select" id="supply_id" name="supply_id" required>
                                 <option value="">Sélectionner une fourniture</option>
                                 <?php foreach ($supplies as $supply): ?>
@@ -359,7 +363,6 @@ window.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 <?php endif; ?>
-</script>
 
 <!-- <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -378,14 +381,25 @@ window.addEventListener('DOMContentLoaded', function() {
         const urlParams = new URLSearchParams(window.location.search);
         const supplyId = urlParams.get('supply_id');
         const supplySelect = document.getElementById('supply_id');
+        const supplyLabel = document.getElementById('supply_label');
 
         if (supplyId && supplySelect) {
             Array.from(supplySelect.options).forEach(option => {
                 if (option.value === supplyId) {
                     option.selected = true;
                     supplySelect.style.display = 'none'; // Masquer le menu déroulant
+                    supplyLabel.style.display = 'none'; // Masquer le label
                 }
             });
+        }
+    });
+</script>
+
+<script>
+    document.getElementById('supply_id').addEventListener('change', function() {
+        const supplyId = this.value;
+        if (supplyId) {
+            window.location.href = `entry.php?supply_id=${supplyId}`;
         }
     });
 </script>

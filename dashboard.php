@@ -15,7 +15,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 try {
     $db = getDbConnection();
     $stmt = $db->query("
-        SELECT id, reference, designation, description, quantite_stock, seuil_alerte, commande_en_cours
+        SELECT id, reference, designation, conditionnement, quantite_stock, seuil_alerte, commande_en_cours
         FROM FOURNITURE
         WHERE seuil_alerte IS NOT NULL
         AND quantite_stock <= seuil_alerte
@@ -55,7 +55,7 @@ try {
 // Récupérer les fournitures en commande
 try {
     $stmt = $db->query("
-        SELECT id, reference, designation, description, quantite_stock, seuil_alerte, commande_en_cours
+        SELECT id, reference, designation, conditionnement, quantite_stock, seuil_alerte, commande_en_cours
         FROM FOURNITURE
         WHERE commande_en_cours = TRUE
         ORDER BY reference
@@ -245,8 +245,8 @@ include_once 'includes/header.php';
                                 <tr>
                                     <td><?php echo htmlspecialchars($item['reference']); ?></td>
                                     <td><strong><?php echo htmlspecialchars($item['designation']); ?></strong>
-                                        <?php if (!empty($item['description'])): ?>
-                                            <div class="small text-muted"><?php echo htmlspecialchars(mb_substr($item['description'], 0, 50)) . (mb_strlen($item['description']) > 50 ? '...' : ''); ?></div>
+                                        <?php if (!empty($item['conditionnement'])): ?>
+                                            <div class="small text-muted"><?php echo htmlspecialchars(mb_substr($item['conditionnement'], 0, 50)) . (mb_strlen($item['conditionnement']) > 50 ? '...' : ''); ?></div>
                                         <?php endif; ?>
                                     </td>
                                     <td class="text-center font-weight-bold <?php echo $item['quantite_stock'] == 0 ? 'text-danger' : 'text-warning'; ?>">
@@ -336,8 +336,8 @@ include_once 'includes/header.php';
                                 <tr>
                                     <td><?php echo htmlspecialchars($item['reference']); ?></td>
                                     <td><strong><?php echo htmlspecialchars($item['designation']); ?></strong>
-                                        <?php if (!empty($item['description'])): ?>
-                                            <div class="small text-muted"><?php echo htmlspecialchars(mb_substr($item['description'], 0, 50)) . (mb_strlen($item['description']) > 50 ? '...' : ''); ?></div>
+                                        <?php if (!empty($item['conditionnement'])): ?>
+                                            <div class="small text-muted"><?php echo htmlspecialchars(mb_substr($item['conditionnement'], 0, 50)) . (mb_strlen($item['conditionnement']) > 50 ? '...' : ''); ?></div>
                                         <?php endif; ?>
                                     </td>
                                     <td class="text-center font-weight-bold <?php echo $item['quantite_stock'] == 0 ? 'text-danger' : ($item['quantite_stock'] <= $item['seuil_alerte'] ? 'text-warning' : ''); ?>">

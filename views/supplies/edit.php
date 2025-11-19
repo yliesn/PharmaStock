@@ -30,7 +30,7 @@ $supply_id = (int)$_GET['id'];
 // Récupérer les informations de la fourniture
 try {
     $db = getDbConnection();
-    $stmt = $db->prepare("SELECT id, reference, designation, description, quantite_stock, seuil_alerte FROM FOURNITURE WHERE id = ?");
+    $stmt = $db->prepare("SELECT id, reference, designation, conditionnement, quantite_stock, seuil_alerte FROM FOURNITURE WHERE id = ?");
     $stmt->execute([$supply_id]);
     $supply = $stmt->fetch();
 
@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Récupérer et valider les données du formulaire
         $reference = isset($_POST['reference']) ? trim($_POST['reference']) : '';
         $designation = isset($_POST['designation']) ? trim($_POST['designation']) : '';
-        $description = isset($_POST['description']) ? trim($_POST['description']) : '';
+        $conditionnement = isset($_POST['conditionnement']) ? trim($_POST['conditionnement']) : '';
         $seuil_alerte = isset($_POST['seuil_alerte']) && $_POST['seuil_alerte'] !== '' ? (int)$_POST['seuil_alerte'] : null;
         
         // Validation de base
@@ -90,8 +90,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $message_type = 'error';
                 } else {
                     // Mettre à jour la fourniture
-                    $stmt = $db->prepare("UPDATE FOURNITURE SET reference = ?, designation = ?, description = ?, seuil_alerte = ? WHERE id = ?");
-                    $result = $stmt->execute([$reference, $designation, $description, $seuil_alerte, $supply_id]);
+                    $stmt = $db->prepare("UPDATE FOURNITURE SET reference = ?, designation = ?, conditionnement = ?, seuil_alerte = ? WHERE id = ?");
+                    $result = $stmt->execute([$reference, $designation, $conditionnement, $seuil_alerte, $supply_id]);
                     
                     if ($result) {
                         $message = "La fourniture a été modifiée avec succès.";
@@ -100,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         // Mettre à jour les données affichées
                         $supply['reference'] = $reference;
                         $supply['designation'] = $designation;
-                        $supply['description'] = $description;
+                        $supply['conditionnement'] = $conditionnement;
                         $supply['seuil_alerte'] = $seuil_alerte;
                     } else {
                         $message = "Une erreur est survenue lors de la modification de la fourniture.";
@@ -167,10 +167,10 @@ include_once ROOT_PATH . '/includes/header.php';
                             </div>
                         </div>
                         
-                        <!-- Description -->
+                        <!-- conditionnement -->
                         <div class="mb-3">
-                            <label for="description" class="form-label">Conditionnement</label>
-                            <textarea class="form-control" id="description" name="description" rows="3"><?php echo htmlspecialchars($supply['description']); ?></textarea>
+                            <label for="conditionnement" class="form-label">Conditionnement</label>
+                            <textarea class="form-control" id="conditionnement" name="conditionnement" rows="3"><?php echo htmlspecialchars($supply['conditionnement']); ?></textarea>
                             <div class="form-text">Conditionnement de la fourniture (optionnel).</div>
                         </div>
                         

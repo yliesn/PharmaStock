@@ -32,7 +32,7 @@ CREATE TABLE FOURNITURE (
     id INT AUTO_INCREMENT PRIMARY KEY,
     reference VARCHAR(50) NOT NULL,
     designation VARCHAR(255) NOT NULL,
-    description TEXT,
+    conditionnement TEXT,
     quantite_stock INT NOT NULL DEFAULT 0,
     seuil_alerte INT,
     commande_en_cours BOOLEAN NOT NULL DEFAULT FALSE,
@@ -114,7 +114,7 @@ DELIMITER ;
 -- ('Admin', 'System', 'root', '$2y$10$JHaxZmEJr5Llo5e65ytdk.3jtR8v3fvFultDY3ZmGSL.kb5Mv4eSS', 'ADMIN');
 
 
--- INSERT INTO FOURNITURE (reference, designation, description, quantite_stock, seuil_alerte) VALUES
+-- INSERT INTO FOURNITURE (reference, designation, conditionnement, quantite_stock, seuil_alerte) VALUES
 -- ('F001', 'Stylo bleu', 'Stylo à bille de couleur bleue', 100, 20),
 -- ('F002', 'Ramette papier A4', 'Ramette de 500 feuilles blanches A4 80g', 50, 10),
 -- ('F003', 'Cahier grand format', 'Cahier 24x32 à grands carreaux', 75, 15);
@@ -141,12 +141,12 @@ CREATE TABLE FEATURE_TOGGLES (
     feature_key VARCHAR(100) NOT NULL UNIQUE,
     label VARCHAR(255) NOT NULL,
     value TINYINT(1) NOT NULL DEFAULT 0,
-    description TEXT NULL,
+    conditionnement TEXT NULL,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Toggles de fonctionnalités système
-INSERT INTO FEATURE_TOGGLES (feature_key, label, value, description) VALUES
+INSERT INTO FEATURE_TOGGLES (feature_key, label, value, conditionnement) VALUES
 ('enable_barcode_scanner', 'Activer le scanner de codes-barres', 1, 'Permet l''utilisation du scanner de codes-barres dans l''application'),
 ('enable_bulk_import', 'Activer import en lot', 0, 'Permet l''import en masse des fournitures via fichier CSV'),
 ('enable_stock_alerts', 'Activer alertes de stock', 1, 'Envoie des notifications quand le stock atteint le seuil d''alerte'),

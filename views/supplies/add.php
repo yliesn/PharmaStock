@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Récupérer et valider les données du formulaire
         $reference = isset($_POST['reference']) && $_POST['reference'] !== 'Auto-généré' ? trim($_POST['reference']) : '';
         $designation = isset($_POST['designation']) ? trim($_POST['designation']) : '';
-        $description = isset($_POST['description']) ? trim($_POST['description']) : '';
+        $conditionnement = isset($_POST['conditionnement']) ? trim($_POST['conditionnement']) : '';
         $quantite_initiale = isset($_POST['quantite_initiale']) ? (int)$_POST['quantite_initiale'] : 0;
         $seuil_alerte = isset($_POST['seuil_alerte']) && $_POST['seuil_alerte'] !== '' ? (int)$_POST['seuil_alerte'] : null;
         
@@ -99,8 +99,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 
                 // Insérer la nouvelle fourniture
-                $stmt = $db->prepare("INSERT INTO FOURNITURE (reference, designation, description, quantite_stock, seuil_alerte) VALUES (?, ?, ?, 0, ?)");
-                $result = $stmt->execute([$reference, $designation, $description, $seuil_alerte]);
+                $stmt = $db->prepare("INSERT INTO FOURNITURE (reference, designation, conditionnement, quantite_stock, seuil_alerte) VALUES (?, ?, ?, 0, ?)");
+                $result = $stmt->execute([$reference, $designation, $conditionnement, $seuil_alerte]);
                 
                 if ($result) {
                     $supply_id = $db->lastInsertId();
@@ -123,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     
                     // Réinitialiser les données du formulaire après succès
                     $reference = 'Auto-généré';
-                    $designation = $description = '';
+                    $designation = $conditionnement = '';
                     $quantite_initiale = 0;
                     $seuil_alerte = null;
                 } else {
@@ -205,11 +205,11 @@ include_once ROOT_PATH . '/includes/header.php';
                             </div>
                         </div>
                         
-                        <!-- Description -->
+                        <!-- Conditionnement -->
                         <div class="mb-3">
-                            <label for="description" class="form-label">Description</label>
-                            <textarea class="form-control" id="description" name="description" rows="3"><?php echo isset($description) ? htmlspecialchars($description) : ''; ?></textarea>
-                            <div class="form-text">Description détaillée de la fourniture (optionnel).</div>
+                            <label for="conditionnement" class="form-label">Conditionnement</label>
+                            <textarea class="form-control" id="conditionnement" name="conditionnement" rows="3"><?php echo isset($conditionnement) ? htmlspecialchars($conditionnement) : ''; ?></textarea>
+                            <div class="form-text">Conditionnement de la fourniture (optionnel).</div>
                         </div>
                         
                         <!-- Quantité initiale et Seuil d'alerte -->

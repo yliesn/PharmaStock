@@ -27,12 +27,12 @@ $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $filter = isset($_GET['filter']) ? $_GET['filter'] : 'all';
 
 // Construction de la requête SQL de base
-$sql = "SELECT id, reference, designation, description, quantite_stock, seuil_alerte, commande_en_cours FROM FOURNITURE";
+$sql = "SELECT id, reference, designation, conditionnement, quantite_stock, seuil_alerte, commande_en_cours FROM FOURNITURE";
 $params = [];
 
 // Ajout des conditions de recherche et filtrage
 if (!empty($search)) {
-    $sql .= " WHERE (reference LIKE ? OR designation LIKE ? OR description LIKE ?)";
+    $sql .= " WHERE (reference LIKE ? OR designation LIKE ? OR conditionnement LIKE ?)";
     $searchTerm = "%$search%";
     $params = [$searchTerm, $searchTerm, $searchTerm];
     
@@ -159,8 +159,8 @@ include_once ROOT_PATH . '/includes/header.php';
                                     <td><?php echo htmlspecialchars($supply['reference']); ?></td>
                                     <td>
                                         <span class="fw-bold"><?php echo htmlspecialchars($supply['designation']); ?></span>
-                                        <?php if (!empty($supply['description'])): ?>
-                                            <div class="small text-muted"><?php echo htmlspecialchars(mb_substr($supply['description'], 0, 50)) . (mb_strlen($supply['description']) > 50 ? '...' : ''); ?></div>
+                                        <?php if (!empty($supply['conditionnement'])): ?>
+                                            <div class="small text-muted"><?php echo htmlspecialchars(mb_substr($supply['conditionnement'], 0, 50)) . (mb_strlen($supply['conditionnement']) > 50 ? '...' : ''); ?></div>
                                         <?php endif; ?>
                                     </td>
                                     <td class="fw-bold text-end"><?php echo number_format($supply['quantite_stock'], 0, ',', ' '); ?></td>
