@@ -39,7 +39,7 @@ if (!empty($search)) {
 }
 
 // Ordre de tri
-$sql .= " ORDER BY designation ASC";
+$sql .= " ORDER BY id ASC";
 
 try {
     $db = getDbConnection();
