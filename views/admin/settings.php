@@ -96,8 +96,8 @@ include_once ROOT_PATH . '/includes/header.php';
                                 <label class="list-group-item d-flex justify-content-between align-items-center">
                                     <div>
                                         <strong><?php echo htmlspecialchars($f['label']); ?></strong>
-                                        <?php if (!empty($f['conditionnement'])): ?>
-                                            <div class="small text-muted"><?php echo htmlspecialchars($f['conditionnement']); ?></div>
+                                        <?php if (!empty($f['description'])): ?>
+                                            <div class="small text-muted"><?php echo htmlspecialchars($f['description']); ?></div>
                                         <?php endif; ?>
                                     </div>
                                     <div>
