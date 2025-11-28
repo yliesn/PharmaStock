@@ -52,19 +52,19 @@ try {
         
         if (!$selected_supply) {
             $_SESSION['error_message'] = "Fourniture non trouvée.";
-            redirect(BASE_URL . '/views/stock/exit.php');
+            redirect('views/stock/exit.php');
         }
         
         // Vérifier si le stock est disponible
         if ($selected_supply['quantite_stock'] <= 0) {
             $_SESSION['error_message'] = "Cette fourniture est en rupture de stock.";
-            redirect(BASE_URL . '/views/supplies/view.php?id=' . $supply_id);
+            redirect('views/supplies/view.php?id=' . $supply_id);
         }
     }
 } catch (Exception $e) {
     error_log('Erreur lors de la récupération des fournitures: ' . $e->getMessage());
     $_SESSION['error_message'] = "Une erreur est survenue lors de la récupération des fournitures.";
-    redirect(BASE_URL . '/dashboard.php');
+    redirect('dashboard.php');
 }
 
 // Traitement du formulaire si soumis
@@ -346,7 +346,8 @@ include_once ROOT_PATH . '/includes/header.php';
                                 var supplySelect = document.querySelector('select[name="supply_id"]');
                                 for (var i = 0; i < supplySelect.options.length; i++) {
                                     if (supplySelect.options[i].text.includes(code)) {
-                                        supplySelect.selectedIndex = i;
+                                        var supplyId = supplySelect.options[i].value;
+                                        window.location.href = `entry.php?supply_id=${supplyId}`;
                                         break;
                                     }
                                 }
@@ -365,6 +366,14 @@ include_once ROOT_PATH . '/includes/header.php';
         </div>
     </div>
 </div>
+<script>
+    document.getElementById('supply_id').addEventListener('change', function() {
+        const supplyId = this.value;
+        if (supplyId) {
+            window.location.href = `exit.php?supply_id=${supplyId}`;
+        }
+    });
+</script>
 
 <?php
 // Script spécifique à la page

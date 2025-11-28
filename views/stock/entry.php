@@ -53,13 +53,13 @@ try {
         
         if (!$selected_supply) {
             $_SESSION['error_message'] = "Fourniture non trouvée.";
-            redirect(BASE_URL . '/views/stock/entry.php');
+            redirect('views/stock/entry.php');
         }
     }
 } catch (Exception $e) {
     error_log('Erreur lors de la récupération des fournitures: ' . $e->getMessage());
     $_SESSION['error_message'] = "Une erreur est survenue lors de la récupération des fournitures.";
-    redirect(BASE_URL . '/dashboard.php');
+    redirect('dashboard.php');
 }
 
 // Traitement du formulaire si soumis
@@ -347,11 +347,11 @@ window.addEventListener('DOMContentLoaded', function() {
         });
     Quagga.onDetected(function(data) {
         var code = data.codeResult.code;
-        // resultNode.innerHTML = '<div class="alert alert-success">Code scanné : <b>' + code + '</b></div>';
         var supplySelect = document.querySelector('select[name="supply_id"]');
         for (var i = 0; i < supplySelect.options.length; i++) {
             if (supplySelect.options[i].text.includes(code)) {
-                supplySelect.selectedIndex = i;
+                var supplyId = supplySelect.options[i].value;
+                window.location.href = `entry.php?supply_id=${supplyId}`;
                 break;
             }
         }
