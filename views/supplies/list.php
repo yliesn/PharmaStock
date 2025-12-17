@@ -156,14 +156,18 @@ include_once ROOT_PATH . '/includes/header.php';
                         <tbody>
                             <?php foreach ($supplies as $supply): ?>
                                 <tr>
+                                    <!-- RÉFÉRENCE -->
                                     <td><?php echo htmlspecialchars($supply['reference']); ?></td>
+                                    <!-- DÉSIGNATION -->
                                     <td>
                                         <span class="fw-bold"><?php echo htmlspecialchars($supply['designation']); ?></span>
                                         <?php if (!empty($supply['conditionnement'])): ?>
                                             <div class="small text-muted"><?php echo htmlspecialchars(mb_substr($supply['conditionnement'], 0, 50)) . (mb_strlen($supply['conditionnement']) > 50 ? '...' : ''); ?></div>
                                         <?php endif; ?>
                                     </td>
+                                    <!-- STOCK ACTUEL -->
                                     <td class="fw-bold text-end"><?php echo number_format($supply['quantite_stock'], 0, ',', ' '); ?></td>
+                                    <!-- SEUIL ALERTE -->
                                     <td class="text-end">
                                         <?php if ($supply['seuil_alerte']): ?>
                                             <?php echo number_format($supply['seuil_alerte'], 0, ',', ' '); ?>
@@ -171,6 +175,7 @@ include_once ROOT_PATH . '/includes/header.php';
                                             <span class="text-muted">Non défini</span>
                                         <?php endif; ?>
                                     </td>
+                                    <!-- STATUT -->
                                     <td>
                                         <?php 
                                         if ($supply['commande_en_cours']) {
@@ -188,6 +193,7 @@ include_once ROOT_PATH . '/includes/header.php';
                                         }
                                         ?>
                                     </td>
+                                    <!-- ACTION -->
                                     <td>
                                         <div class="btn-group btn-group-sm">
                                             <a href="<?php echo BASE_URL; ?>/views/supplies/view.php?id=<?php echo $supply['id']; ?>" 
@@ -203,6 +209,7 @@ include_once ROOT_PATH . '/includes/header.php';
                                                 <i class="fas fa-plus"></i>
                                             </a>
                                             <?php  if ($supply['quantite_stock'] != 0) { ?>
+                                            
                                             <a href="<?php echo BASE_URL; ?>/views/stock/exit.php?supply_id=<?php echo $supply['id']; ?>" 
                                                class="btn btn-outline-danger" title="Sortie de stock">
                                                 <i class="fas fa-minus"></i>
@@ -210,11 +217,11 @@ include_once ROOT_PATH . '/includes/header.php';
                                             <?php } ?>
                                             <form method="POST" action="<?php echo BASE_URL; ?>/views/supplies/toggle_order.php" class="d-inline">
                                                     <input type="hidden" name="supply_id" value="<?php echo $supply['id']; ?>">
-                                                    <input type="hidden" name="status" value="1">
-                                                    <input type="hidden" name="redirect" value="dashboard.php">
+                                                    <input type="hidden" name="status" value="<?php echo $supply['commande_en_cours'] ? '0' : '1'; ?>">
+                                                    <input type="hidden" name="redirect" value="views/supplies/list.php">
                                                     <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
                                                     <button type="submit" class="btn btn-warning " style="border-radius: 0;" title="Marquer comme commandé">
-                                                        <i class="fas fa-truck"></i>
+                                                        <i class="<?php echo $supply['commande_en_cours'] ? 'fas fa-times-circle' : 'fas fa-truck'; ?>"></i>
                                                     </button>
                                             </form>
 

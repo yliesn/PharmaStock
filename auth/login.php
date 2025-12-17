@@ -7,6 +7,37 @@
 // Inclure le fichier de configuration
 require_once '../config/config.php';
 
+// Connexion par token (QR)
+if (isset($_GET['token'])) {
+    $token = $_GET['token'];
+    $db = getDbConnection();
+    
+    $stmt = $db->prepare(" SELECT lt.id, u.* FROM LOGIN_TOKEN lt JOIN UTILISATEUR u ON u.id = lt.user_id WHERE lt.token = ? AND lt.expire_at > NOW() AND lt.used = 0 AND u.actif = 1");
+    $stmt->execute([$token]);
+    $user = $stmt->fetch();
+
+    if ($user) {
+        session_regenerate_id(true);
+
+        $_SESSION['logged_in'] = true;
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['user_nom'] = $user['nom'];
+        $_SESSION['user_prenom'] = $user['prenom'];
+        $_SESSION['user_role'] = $user['role'];
+        $_SESSION['login_time'] = time();
+
+        // Invalider le token (optionnel mais recommandé)
+        // $db->prepare("UPDATE LOGIN_TOKEN SET used = 1 WHERE id = ?")
+        //    ->execute([$user['id']]);
+
+        redirect('dashboard.php');
+    } else {
+        $_SESSION['error_message'] = "Lien de connexion invalide ou expiré.";
+        redirect('index.php');
+    }
+}
+
+
 // Vérifier si le formulaire a été soumis
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
    

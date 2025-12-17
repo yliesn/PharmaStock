@@ -258,7 +258,11 @@ include_once ROOT_PATH . '/includes/header.php';
         </div>
     </div>
 </div>
-
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        
+    });
+</script>
 <?php
 // Scripts spécifiques à la page
 $page_scripts = [
@@ -269,10 +273,11 @@ $page_specific_script = "
     // Initialisation de DataTables pour la pagination et la recherche
     $(document).ready(function() {
         $('#movements-table').DataTable({
+            ordering: false,
+            pageLength: 25,
             language: {
                 url: '//cdn.datatables.net/plug-ins/1.10.25/i18n/French.json'
-            },
-            pageLength: 25
+            }
         });
     });
 ";
