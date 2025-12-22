@@ -287,6 +287,61 @@ include_once ROOT_PATH . '/includes/header.php';
             <?php endif; ?>
         </div>
     </div>
+    <!-- Section Dates de péremption -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="fas fa-calendar-days me-2"></i>Dates de péremption</h5>
+            <button type="button" class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#peremptionModal">
+                <i class="fas fa-plus me-1"></i> Ajouter une péremption
+            </button>
+        </div>
+        <div class="card-body">
+            <div id="peremptionList">
+                <!-- Les péremptions seront chargées ici -->
+                <p class="text-muted text-center"><i class="fas fa-spinner fa-spin"></i> Chargement des données...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal pour ajouter une péremption -->
+<div class="modal fade" id="peremptionModal" tabindex="-1" aria-labelledby="peremptionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg">
+      <form id="peremptionForm" method="post">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title" id="peremptionModalLabel"><i class="fas fa-plus-circle me-2"></i>Ajouter une péremption</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" name="fourniture_id" id="modalFournitureId" value="<?php echo $supply['id']; ?>">
+            
+            <div class="mb-3">
+                <label for="modalNumerotLot" class="form-label">Numéro de lot <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="modalNumerotLot" name="numero_lot" required placeholder="Ex: LOT-2024-001">
+                <small class="form-text text-muted">Identifiant unique du lot</small>
+            </div>
+            
+            <div class="mb-3">
+                <label for="modalDatePeremption" class="form-label">Date de péremption <span class="text-danger">*</span></label>
+                <input type="date" class="form-control" id="modalDatePeremption" name="date_peremption" required>
+                <small class="form-text text-muted">La date à laquelle le produit expire</small>
+            </div>
+            
+            <div class="mb-3">
+                <label for="modalCommentaire" class="form-label">Commentaire</label>
+                <textarea id="modalCommentaire" name="commentaire" class="form-control" rows="2" placeholder="Remarques additionnelles..."></textarea>
+            </div>
+            
+            <div id="peremptionAlert" class="alert d-none"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
 
 <?php
@@ -309,9 +364,12 @@ window.addEventListener('DOMContentLoaded', function() {
         margin: 10,
         text: desc
     });
+    
+    // Charger les péremptions
+    loadPeremptions();
 });
-// Téléchargement au clic sur le bouton
 
+// Téléchargement au clic sur le bouton
 document.getElementById('barcode-btn').addEventListener('click', function() {
     var reference = <?php echo json_encode($supply['reference']); ?>;
     var svg = document.getElementById('barcode');
@@ -327,4 +385,162 @@ document.getElementById('barcode-btn').addEventListener('click', function() {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 });
+
+// Gestion de la modal de péremption
+const peremptionModal = new bootstrap.Modal(document.getElementById('peremptionModal'));
+const peremptionForm = document.getElementById('peremptionForm');
+const peremptionAlert = document.getElementById('peremptionAlert');
+
+// Charger la liste des péremptions
+function loadPeremptions() {
+    const fournitureId = <?php echo $supply['id']; ?>;
+    const container = document.getElementById('peremptionList');
+    
+    fetch(`<?php echo BASE_URL; ?>/api/peremptions.php?fourniture_id=${fournitureId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                displayPeremptions(data.peremptions);
+            } else {
+                container.innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-circle me-2"></i>${data.message || 'Erreur lors du chargement'}</div>`;
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            container.innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-circle me-2"></i>Erreur lors du chargement des données</div>`;
+        });
+}
+
+// Afficher les péremptions
+function displayPeremptions(peremptions) {
+    const container = document.getElementById('peremptionList');
+    
+    if (peremptions.length === 0) {
+        container.innerHTML = `
+            <div class="text-center text-muted py-4">
+                <i class="fas fa-calendar-check fa-3x mb-3 d-block opacity-50"></i>
+                <p>Aucune date de péremption enregistrée</p>
+                <small>Cliquez sur "Ajouter une péremption" pour en ajouter une</small>
+            </div>
+        `;
+        return;
+    }
+    
+    let html = '<div class="table-responsive"><table class="table table-hover table-striped">';
+    html += '<thead class="table-light"><tr>';
+    html += '<th>Numéro de lot</th>';
+    html += '<th>Date de péremption</th>';
+    html += '<th>Statut</th>';
+    html += '<th>Actions</th>';
+    html += '</tr></thead><tbody>';
+    
+    peremptions.forEach(peremption => {
+        const datePeremption = new Date(peremption.date_peremption);
+        const aujourd = new Date();
+        
+        let badgeClass = 'bg-success';
+        let badgeText = 'Valide';
+        
+        if (datePeremption < aujourd) {
+            badgeClass = 'bg-danger';
+            badgeText = 'Expiré';
+        } else {
+            const joursRestants = Math.ceil((datePeremption - aujourd) / (1000 * 60 * 60 * 24));
+            if (joursRestants <= 30) {
+                badgeClass = 'bg-warning text-dark';
+                badgeText = `${joursRestants} jours`;
+            }
+        }
+        
+        html += `
+            <tr>
+                <td><strong>${escapeHtml(peremption.numero_lot)}</strong></td>
+                <td>${formatDate(peremption.date_peremption)}</td>
+                <td><span class="badge ${badgeClass}">${badgeText}</span></td>
+                <td>
+                    <button class="btn btn-sm btn-outline-danger" onclick="deletePeremption(${peremption.id})" title="Supprimer">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+    });
+    
+    html += '</tbody></table></div>';
+    container.innerHTML = html;
+}
+
+// Soumettre le formulaire de péremption
+peremptionForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(peremptionForm);
+    
+    fetch(`<?php echo BASE_URL; ?>/api/peremptions.php`, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showAlert('success', 'Succès', data.message);
+            peremptionForm.reset();
+            peremptionModal.hide();
+            loadPeremptions();
+        } else {
+            showAlert('danger', 'Erreur', data.message || 'Une erreur est survenue');
+        }
+    })
+    .catch(error => {
+        console.error('Erreur:', error);
+        showAlert('danger', 'Erreur', 'Une erreur est survenue lors de l\'envoi du formulaire');
+    });
+});
+
+// Supprimer une péremption
+function deletePeremption(peremptionId) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer cette péremption ?')) {
+        fetch(`<?php echo BASE_URL; ?>/api/peremptions.php?id=${peremptionId}`, {
+            method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showAlert('success', 'Succès', 'Péremption supprimée');
+                loadPeremptions();
+            } else {
+                showAlert('danger', 'Erreur', data.message || 'Erreur lors de la suppression');
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            showAlert('danger', 'Erreur', 'Erreur lors de la suppression');
+        });
+    }
+}
+
+// Afficher une alerte dans la modal
+function showAlert(type, title, message) {
+    const alert = document.getElementById('peremptionAlert');
+    alert.className = `alert alert-${type}`;
+    alert.innerHTML = `<strong>${title}:</strong> ${message}`;
+    alert.classList.remove('d-none');
+    
+    // Masquer après 5 secondes
+    setTimeout(() => {
+        alert.classList.add('d-none');
+    }, 5000);
+}
+
+// Utilitaires
+function formatDate(dateString) {
+    const date = new Date(dateString + 'T00:00:00');
+    return date.toLocaleDateString('fr-FR');
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
 </script>

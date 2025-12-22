@@ -96,6 +96,21 @@ CREATE TABLE INVENTAIRE_LIGNE (
     FOREIGN KEY (fourniture_id) REFERENCES FOURNITURE(id)
 );
 
+CREATE TABLE PEREMPTION (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    fourniture_id INT NOT NULL,
+    numero_lot VARCHAR(100) NOT NULL,
+    date_peremption DATE NOT NULL,
+    commentaire TEXT,
+    actif BOOLEAN DEFAULT TRUE,
+
+    CONSTRAINT fk_peremption_fourniture FOREIGN KEY (fourniture_id) REFERENCES FOURNITURE(id) ON DELETE CASCADE ON UPDATE CASCADE,
+
+    CONSTRAINT uk_fourniture_lot UNIQUE (fourniture_id, numero_lot)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+
 -- Création d'un index sur les colonnes fréquemment utilisées pour les recherches
 CREATE INDEX idx_fourniture_reference ON FOURNITURE(reference);
 CREATE INDEX idx_mouvement_date ON MOUVEMENT_STOCK(date_mouvement);

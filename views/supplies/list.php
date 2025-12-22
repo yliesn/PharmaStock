@@ -258,7 +258,7 @@ $page_specific_script = "
                 url: '//cdn.datatables.net/plug-ins/1.10.25/i18n/French.json'
             },
             pageLength: 15,
-            order: [[0, 'asc']]
+            ordering: false
         });
     });
 ";

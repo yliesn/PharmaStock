@@ -72,6 +72,32 @@ try {
     $ordered_count = 0;
 }
 
+// Récupérer les péremptions des 2 prochains mois ET les péremptions expirées
+try {
+    $stmt = $db->prepare("
+        SELECT p.id, p.numero_lot, p.date_peremption, p.commentaire, 
+               f.id as fourniture_id, f.reference, f.designation,
+               CASE WHEN p.date_peremption < CURRENT_DATE() THEN 'EXPIRED' ELSE 'UPCOMING' END as statut_peremption
+        FROM PEREMPTION p
+        JOIN FOURNITURE f ON p.fourniture_id = f.id
+        WHERE p.actif = TRUE
+        AND (p.date_peremption < CURRENT_DATE() OR p.date_peremption <= DATE_ADD(CURRENT_DATE(), INTERVAL 60 DAY))
+        ORDER BY p.date_peremption ASC
+    ");
+    $stmt->execute();
+    $all_peremptions = $stmt->fetchAll();
+    
+    // Séparer pour les compteurs
+    $upcoming_peremptions = array_filter($all_peremptions, fn($p) => $p['statut_peremption'] === 'UPCOMING');
+    $expired_peremptions = array_filter($all_peremptions, fn($p) => $p['statut_peremption'] === 'EXPIRED');
+} catch (Exception $e) {
+    error_log('Erreur lors de la récupération des péremptions: ' . $e->getMessage());
+    $all_peremptions = [];
+    $upcoming_peremptions = [];
+    $expired_peremptions = [];
+}
+
+
 // Définir le titre de la page
 $page_title = "Tableau de bord";
 // Définir ROOT_PATH pour le header
@@ -374,7 +400,92 @@ include_once 'includes/header.php';
             <?php endif; ?>
         </div>
     </div>
-    <!-- Activité récente -->
+    
+    <!-- Fournitures péremptionnant bientôt et déjà périmées -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+            <h5 class="m-0 font-weight-bold"><i class="fas fa-calendar-times me-2"></i>Gestion des péremptions</h5>
+            <small class="text-white"><?php echo count($upcoming_peremptions); ?> à venir, <?php echo count($expired_peremptions); ?> expirée(s)</small>
+        </div>
+        <div class="card-body">
+            <?php if (empty($all_peremptions)): ?>
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle me-2"></i>Aucune péremption prévue ou expirée.
+                </div>
+            <?php else: ?>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Référence</th>
+                                <th>Désignation</th>
+                                <th>Numéro de lot</th>
+                                <th>Date de péremption</th>
+                                <th class="text-center">Statut</th>
+                                <th class="text-center">Jours</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($all_peremptions as $peremption): 
+                                $date_peremption = new DateTime($peremption['date_peremption']);
+                                $aujourd = new DateTime();
+                                $interval = $aujourd->diff($date_peremption);
+                                
+                                if ($peremption['statut_peremption'] === 'EXPIRED') {
+                                    $jours = $interval->days;
+                                    $badge_class = 'bg-danger';
+                                    $badge_text = 'Expiré';
+                                    $row_class = 'table-danger';
+                                } else {
+                                    $jours = $interval->days;
+                                    $row_class = '';
+                                    
+                                    if ($jours <= 7) {
+                                        $badge_class = 'bg-danger';
+                                        $badge_text = 'Urgent';
+                                    } elseif ($jours <= 30) {
+                                        $badge_class = 'bg-warning text-dark';
+                                        $badge_text = 'Bientôt';
+                                    } else {
+                                        $badge_class = 'bg-info';
+                                        $badge_text = 'À surveiller';
+                                    }
+                                }
+                            ?>
+                                <tr class="<?php echo $row_class; ?>">
+                                    <td><?php echo htmlspecialchars($peremption['reference']); ?></td>
+                                    <td><strong><?php echo htmlspecialchars($peremption['designation']); ?></strong></td>
+                                    <td><?php echo htmlspecialchars($peremption['numero_lot']); ?></td>
+                                    <td><?php echo date('d/m/Y', strtotime($peremption['date_peremption'])); ?></td>
+                                    <td class="text-center">
+                                        <span class="badge <?php echo $badge_class; ?>"><?php echo $badge_text; ?></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <?php if ($peremption['statut_peremption'] === 'EXPIRED'): ?>
+                                            <span class="badge bg-danger"><?php echo $jours; ?> j passés</span>
+                                        <?php else: ?>
+                                            <span class="badge bg-info"><?php echo $jours; ?> j</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="<?php echo BASE_URL; ?>/views/supplies/view.php?id=<?php echo $peremption['fourniture_id']; ?>" class="btn btn-primary" title="Voir les détails">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="<?php echo BASE_URL; ?>/views/stock/exit.php?supply_id=<?php echo $peremption['fourniture_id']; ?>" class="btn btn-danger" title="Sortir du stock">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
     <!-- <div class="card shadow mb-4">
         <div class="card-header bg-info text-white">
             <h5 class="m-0 font-weight-bold"><i class="fas fa-history me-2"></i>Activité récente</h5>
