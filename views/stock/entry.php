@@ -295,7 +295,7 @@ include_once ROOT_PATH . '/includes/header.php';
                         
                         <!-- Boutons d'action -->
                         <div class="d-flex justify-content-between">
-                            <a href="<?php echo BASE_URL . '/views/supplies/list.php'; ?>" class="btn btn-secondary">
+                            <a href="<?php echo BASE_URL . '/'. $_SESSION['PATH']; ?>" class="btn btn-secondary">
                                 <i class="fas fa-arrow-left me-1"></i> Retour
                             </a>
                             <?php if ($selected_supply){ ?>

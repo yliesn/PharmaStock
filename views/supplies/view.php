@@ -99,7 +99,7 @@ include_once ROOT_PATH . '/includes/header.php';
             <a href="<?php echo BASE_URL; ?>/views/supplies/edit.php?id=<?php echo $supply['id']; ?>" class="btn btn-primary me-2">
                 <i class="fas fa-edit me-1"></i> Modifier
             </a>
-            <a href="<?php echo BASE_URL; ?>/views/supplies/list.php" class="btn btn-secondary">
+            <a href="<?php echo BASE_URL; ?>/<?php echo $_SESSION['PATH'];?>" class="btn btn-secondary">
                 <i class="fas fa-arrow-left me-1"></i> Retour
             </a>
         </div>

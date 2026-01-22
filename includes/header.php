@@ -341,6 +341,7 @@ $appName = getAppConfig('appName') ?? 'Nom par défaut';
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="<?php echo BASE_URL; ?>/views/supplies/list.php">Liste des fournitures</a></li>
+                            <li><a class="dropdown-item" href="<?php echo BASE_URL; ?>/views/supplies/expiry-date.php">Péremption des fournitures</a></li>
                             <li><a class="dropdown-item" href="<?php echo BASE_URL; ?>/views/supplies/add.php">Ajouter une fourniture</a></li>
                             <li><a class="dropdown-item" href="<?php echo BASE_URL; ?>/views/supplies/import_supplies.php">Importer des fournitures</a></li>
                             <!-- <li><hr class="dropdown-divider"></li>

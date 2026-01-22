@@ -100,6 +100,9 @@ try {
 
 // Définir le titre de la page
 $page_title = "Tableau de bord";
+
+$_SESSION['PATH']='dashboard.php';
+
 // Définir ROOT_PATH pour le header
 if (!defined('ROOT_PATH')) {
     define('ROOT_PATH', dirname(__FILE__));

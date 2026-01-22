@@ -62,6 +62,7 @@ try {
     $supplies = [];
     $error_message = "Une erreur est survenue lors de la récupération des fournitures.";
 }
+$_SESSION['PATH']='views/supplies/list.php';
 
 // Inclure l'en-tête
 include_once ROOT_PATH . '/includes/header.php';
